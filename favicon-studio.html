@@ -3892,10 +3892,12 @@ function shapeEl(key) {
   return `<rect width="32" height="32" rx="8"/>`;
 }
 
-function iconTransform(key) {
-  // icons.svg icons are 16×16; favicon is 32×32
-  // center 14×14 effective: scale(0.875) translate to (9,9)
-  return key.startsWith('scallop') ? 'translate(10,10) scale(0.75)' : 'translate(8,8) scale(0.875)';
+function iconRenderTransform(srcSize) {
+  // All icons: 60% of 32px favicon = 19.2px, centered
+  const TARGET = 19.2, FAVICON = 32;
+  const offset = ((FAVICON - TARGET) / 2).toFixed(2); // 6.40
+  const scale  = (TARGET / (srcSize || 16)).toFixed(4);
+  return `translate(${offset},${offset}) scale(${scale})`;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -3910,7 +3912,6 @@ const CDN_URL = {
 
 // Parse SVG inner content and wrap with scale transform
 function wrapCdnIcon(svgText, isStroke, sourceSize) {
-  const scale = 16 / sourceSize;
   const inner = svgText
     .replace(/<\?xml[^>]*\?>/g, '')
     .replace(/<!DOCTYPE[^>]*>/g, '')
@@ -3920,7 +3921,8 @@ function wrapCdnIcon(svgText, isStroke, sourceSize) {
     .replace(/\s*fill="[^"]*"/g, '')
     .replace(/\s*stroke="[^"]*"/g, '')
     .replace(/\s*stroke-width="[^"]*"/g, '');
-  return { paths: `<g transform="scale(${scale.toFixed(4)})">${inner}</g>`, stroke: isStroke };
+  // store raw paths + source size; centering applied at render time
+  return { paths: inner, stroke: isStroke, srcSize: sourceSize };
 }
 
 async function loadIconsSprite() {
@@ -3953,9 +3955,13 @@ async function loadIconsSprite() {
           .replace(/\s*fill="[^"]*"/g,'')
           .replace(/\s*stroke="[^"]*"/g,'');
         const scale=Math.min(16/bbox.width, 16/bbox.height);
+        // center non-square icons within the 16×16 normalized box
+        const cx=((16-bbox.width*scale)/2 - bbox.x*scale).toFixed(2);
+        const cy=((16-bbox.height*scale)/2 - bbox.y*scale).toFixed(2);
         iconSymbols[`${entry.cat}_${idx}`]={
-          paths:`<g transform="translate(${(-bbox.x*scale).toFixed(2)},${(-bbox.y*scale).toFixed(2)}) scale(${scale.toFixed(4)})">${inner}</g>`,
-          stroke:false
+          paths:`<g transform="translate(${cx},${cy}) scale(${scale.toFixed(4)})">${inner}</g>`,
+          stroke:false,
+          srcSize:16
         };
         built++;
       });
@@ -4085,7 +4091,7 @@ function buildContent(entry, suffix, ic, forDom) {
   if(!entry.useText && entry.iconKey){
     const sym = resolveIcon(entry.iconKey, entry.category);
     if(sym){
-      return `<g transform="${iconTransform(entry.shape)}" class="${icClass}">${sym.paths}</g>`;
+      return `<g transform="${iconRenderTransform(sym.srcSize)}" class="${icClass}">${sym.paths}</g>`;
     }
   }
 
