@@ -3607,54 +3607,198 @@ const GRADS   = ['diagonal','reverse-diagonal','vertical','radial-corner','radia
 // Icons referenced by Figma layer id from icons.svg
 // icons[i] = {name:'LayerId'} — matches id attribute in the embedded SVG
 const ICON_MAP = [
-  {cat:'spa',       kw:['spa','thermal','terme','therme','balnear'],
-   icons:[{name:'Spa/welness'},{name:'Lotus flower'},{name:'Stones'}],bias:'pastel'},
-  {cat:'wellness',  kw:['wellness','relax','yoga','meditation','retreat','thalasso'],
-   icons:[{name:'Plant'},{name:'Leaf'},{name:'Spa'}],bias:'pastel'},
-  {cat:'beach',     kw:['beach','strand','mare','plage','seaside','costa','lido'],
-   icons:[{name:'Beach'},{name:'Deck chair'},{name:'Sun umbrella'},{name:'Wave'},{name:'Sunset'}],bias:'warm'},
-  {cat:'ski',       kw:['ski','snow','montagne','mountain','berg','alpin','nieve'],
-   icons:[{name:'Ski'},{name:'Skiing'},{name:'Goggles'},{name:'Snowboard'}],bias:'cool'},
+  {cat:'spa', kw:['spa','thermal','terme','therme','balnear'],
+   icons:[
+     {name:'Spa/welness'},{name:'Lotus flower'},{name:'Stones'},
+     {name:'flower-2',lib:'lucide'},{name:'leaf',lib:'lucide'},{name:'sparkles',lib:'lucide'},
+     {name:'spa',lib:'tabler'},{name:'plant-2',lib:'tabler'},{name:'leaf',lib:'tabler'},
+     {name:'flower-lotus',lib:'phosphor',weight:'fill'},{name:'flower-lotus',lib:'phosphor',weight:'thin'},
+     {name:'leaf',lib:'phosphor',weight:'bold'},{name:'leaf',lib:'phosphor',weight:'thin'},
+   ], bias:'pastel'},
+  {cat:'wellness', kw:['wellness','relax','yoga','meditation','retreat','thalasso'],
+   icons:[
+     {name:'Plant'},{name:'Leaf'},{name:'Spa'},
+     {name:'heart-pulse',lib:'lucide'},{name:'brain',lib:'lucide'},{name:'zap',lib:'lucide'},
+     {name:'yoga',lib:'tabler'},{name:'meditation',lib:'tabler'},{name:'heartbeat',lib:'tabler'},
+     {name:'brain',lib:'phosphor',weight:'bold'},{name:'heart',lib:'phosphor',weight:'fill'},
+     {name:'person-simple-tai-chi',lib:'phosphor',weight:'bold'},{name:'heart',lib:'phosphor',weight:'thin'},
+   ], bias:'pastel'},
+  {cat:'beach', kw:['beach','strand','mare','plage','seaside','costa','lido'],
+   icons:[
+     {name:'Beach'},{name:'Deck chair'},{name:'Sun umbrella'},{name:'Wave'},{name:'Sunset'},
+     {name:'sun',lib:'lucide'},{name:'waves',lib:'lucide'},{name:'umbrella',lib:'lucide'},
+     {name:'beach',lib:'tabler'},{name:'sun',lib:'tabler'},{name:'wave-saw-tool',lib:'tabler'},
+     {name:'sun-horizon',lib:'phosphor',weight:'bold'},{name:'waves',lib:'phosphor',weight:'fill'},
+     {name:'waves',lib:'phosphor',weight:'thin'},{name:'umbrella',lib:'phosphor',weight:'bold'},
+   ], bias:'warm'},
+  {cat:'ski', kw:['ski','snow','montagne','mountain','berg','alpin','nieve'],
+   icons:[
+     {name:'Ski'},{name:'Skiing'},{name:'Goggles'},{name:'Snowboard'},
+     {name:'mountain-snow',lib:'lucide'},{name:'snowflake',lib:'lucide'},{name:'wind',lib:'lucide'},
+     {name:'ski-jumping',lib:'tabler'},{name:'snowflake',lib:'tabler'},{name:'mountain',lib:'tabler'},
+     {name:'mountains',lib:'phosphor',weight:'bold'},{name:'snowflake',lib:'phosphor',weight:'fill'},
+     {name:'wind',lib:'phosphor',weight:'bold'},{name:'snowflake',lib:'phosphor',weight:'thin'},
+   ], bias:'cool'},
   {cat:'breakfast', kw:['breakfast','bedandbreakfast','beb','bedebreakfast','colazione','petitdejeuner','fruhstuck'],
-   icons:[{name:'Croissant'},{name:'Cheese'},{name:'Breakfast_2'}],bias:'warm'},
-  {cat:'romantic',  kw:['romantic','amore','love','couples','honeymoon','amour','romance'],
-   icons:[{name:'Couple'},{name:'Romantic dinner'},{name:'Heart'}],bias:'pastel'},
-  {cat:'camping',   kw:['camping','campground','camp','kemping','campismo'],
-   icons:[{name:'Camping tent'},{name:'Tent'},{name:'Mountain'},{name:'Compass'},{name:'Mountains'}],bias:'earth'},
-  {cat:'glamping',  kw:['glamping'],
-   icons:[{name:'Tent_2'},{name:'Leaf_2'},{name:'Lotus flower'}],bias:'earth'},
-  {cat:'luxury',    kw:['luxury','luxe','lusso','luxus','premium','grand'],
-   icons:[{name:'Luxury'},{name:'Diamond'},{name:'Armchair'}],bias:null},
-  {cat:'boutique',  kw:['boutique','design','lifestyle'],
-   icons:[{name:'Vase'},{name:'Quality'},{name:'Clean'}],bias:null},
-  {cat:'pool',      kw:['pool','piscina','piscine','zwembad'],
-   icons:[{name:'Swimming pool'},{name:'Bar In Pool'},{name:'Rubber ring'},{name:'Flamingo'}],bias:'cool'},
+   icons:[
+     {name:'Croissant'},{name:'Cheese'},{name:'Breakfast_2'},
+     {name:'coffee',lib:'lucide'},{name:'egg',lib:'lucide'},{name:'cup-soda',lib:'lucide'},
+     {name:'croissant',lib:'tabler'},{name:'coffee',lib:'tabler'},{name:'egg',lib:'tabler'},
+     {name:'coffee',lib:'phosphor',weight:'bold'},{name:'egg',lib:'phosphor',weight:'fill'},
+     {name:'bread',lib:'phosphor',weight:'bold'},{name:'coffee-bean',lib:'phosphor',weight:'fill'},
+   ], bias:'warm'},
+  {cat:'romantic', kw:['romantic','amore','love','couples','honeymoon','amour','romance'],
+   icons:[
+     {name:'Couple'},{name:'Romantic dinner'},{name:'Heart'},
+     {name:'heart',lib:'lucide'},{name:'wine',lib:'lucide'},{name:'sparkles',lib:'lucide'},
+     {name:'candle',lib:'tabler'},{name:'heart',lib:'tabler'},{name:'glass-champagne',lib:'tabler'},
+     {name:'heart',lib:'phosphor',weight:'fill'},{name:'heart',lib:'phosphor',weight:'thin'},
+     {name:'champagne',lib:'phosphor',weight:'bold'},{name:'rose',lib:'phosphor',weight:'fill'},
+   ], bias:'pastel'},
+  {cat:'camping', kw:['camping','campground','camp','kemping','campismo'],
+   icons:[
+     {name:'Camping tent'},{name:'Tent'},{name:'Mountain'},{name:'Compass'},{name:'Mountains'},
+     {name:'tent',lib:'lucide'},{name:'mountain',lib:'lucide'},{name:'compass',lib:'lucide'},
+     {name:'campfire',lib:'tabler'},{name:'tent',lib:'tabler'},{name:'compass',lib:'tabler'},
+     {name:'campfire',lib:'phosphor',weight:'bold'},{name:'tent',lib:'phosphor',weight:'fill'},
+     {name:'mountains',lib:'phosphor',weight:'bold'},{name:'compass',lib:'phosphor',weight:'thin'},
+   ], bias:'earth'},
+  {cat:'glamping', kw:['glamping'],
+   icons:[
+     {name:'Tent_2'},{name:'Leaf_2'},{name:'Lotus flower'},
+     {name:'tent',lib:'lucide'},{name:'leaf',lib:'lucide'},{name:'star',lib:'lucide'},
+     {name:'tree-pine',lib:'tabler'},{name:'tent',lib:'tabler'},{name:'leaf',lib:'tabler'},
+     {name:'tent',lib:'phosphor',weight:'thin'},{name:'leaf',lib:'phosphor',weight:'fill'},
+     {name:'star',lib:'phosphor',weight:'fill'},{name:'tree-evergreen',lib:'phosphor',weight:'bold'},
+   ], bias:'earth'},
+  {cat:'luxury', kw:['luxury','luxe','lusso','luxus','premium','grand'],
+   icons:[
+     {name:'Luxury'},{name:'Diamond'},{name:'Armchair'},
+     {name:'diamond',lib:'lucide'},{name:'crown',lib:'lucide'},{name:'star',lib:'lucide'},
+     {name:'gem',lib:'tabler'},{name:'crown',lib:'tabler'},{name:'star',lib:'tabler'},
+     {name:'diamond',lib:'phosphor',weight:'fill'},{name:'crown',lib:'phosphor',weight:'bold'},
+     {name:'crown-simple',lib:'phosphor',weight:'thin'},{name:'star',lib:'phosphor',weight:'fill'},
+   ], bias:null},
+  {cat:'boutique', kw:['boutique','design','lifestyle'],
+   icons:[
+     {name:'Vase'},{name:'Quality'},{name:'Clean'},
+     {name:'star',lib:'lucide'},{name:'palette',lib:'lucide'},{name:'sparkles',lib:'lucide'},
+     {name:'artboard',lib:'tabler'},{name:'star-half-filled',lib:'tabler'},{name:'palette',lib:'tabler'},
+     {name:'palette',lib:'phosphor',weight:'bold'},{name:'star',lib:'phosphor',weight:'fill'},
+     {name:'sparkle',lib:'phosphor',weight:'fill'},{name:'palette',lib:'phosphor',weight:'thin'},
+   ], bias:null},
+  {cat:'pool', kw:['pool','piscina','piscine','zwembad'],
+   icons:[
+     {name:'Swimming pool'},{name:'Bar In Pool'},{name:'Rubber ring'},{name:'Flamingo'},
+     {name:'waves',lib:'lucide'},{name:'droplets',lib:'lucide'},{name:'circle',lib:'lucide'},
+     {name:'swimming',lib:'tabler'},{name:'flamingo',lib:'tabler'},{name:'wave-square',lib:'tabler'},
+     {name:'waves',lib:'phosphor',weight:'bold'},{name:'drop',lib:'phosphor',weight:'fill'},
+     {name:'waves',lib:'phosphor',weight:'thin'},{name:'drop-half',lib:'phosphor',weight:'bold'},
+   ], bias:'cool'},
   {cat:'waterpark', kw:['waterpark','aquapark','wasserpark'],
-   icons:[{name:'Waterpark'},{name:'Rubber ring_2'},{name:'Diving'}],bias:'cool'},
-  {cat:'family',    kw:['family','kinder','kids','enfant','bambini','children','familienhotel'],
-   icons:[{name:'Family'},{name:'Play with child'},{name:'Baby boy'}],bias:'vibrant'},
-  {cat:'pet',       kw:['pet','dog','hund','animaux','perros','chien','haustier'],
-   icons:[{name:'Pet'},{name:'Pawprint'},{name:'Animal care'}],bias:'warm'},
-  {cat:'hostel',    kw:['hostel','jugendherberge','backpacker','auberge'],
-   icons:[{name:'Bunk bed'},{name:'Backpack'},{name:'Hotel'}],bias:'vibrant'},
+   icons:[
+     {name:'Waterpark'},{name:'Rubber ring_2'},{name:'Diving'},
+     {name:'waves',lib:'lucide'},{name:'zap',lib:'lucide'},{name:'droplets',lib:'lucide'},
+     {name:'water-polo',lib:'tabler'},{name:'ripple',lib:'tabler'},{name:'swimming',lib:'tabler'},
+     {name:'waves',lib:'phosphor',weight:'fill'},{name:'drop-half',lib:'phosphor',weight:'bold'},
+     {name:'lightning',lib:'phosphor',weight:'fill'},{name:'waves',lib:'phosphor',weight:'thin'},
+   ], bias:'cool'},
+  {cat:'family', kw:['family','kinder','kids','enfant','bambini','children','familienhotel'],
+   icons:[
+     {name:'Family'},{name:'Play with child'},{name:'Baby boy'},
+     {name:'users',lib:'lucide'},{name:'smile',lib:'lucide'},{name:'baby',lib:'lucide'},
+     {name:'users',lib:'tabler'},{name:'baby',lib:'tabler'},{name:'mood-happy',lib:'tabler'},
+     {name:'users-three',lib:'phosphor',weight:'bold'},{name:'baby',lib:'phosphor',weight:'fill'},
+     {name:'smiley',lib:'phosphor',weight:'fill'},{name:'baby',lib:'phosphor',weight:'thin'},
+   ], bias:'vibrant'},
+  {cat:'pet', kw:['pet','dog','hund','animaux','perros','chien','haustier'],
+   icons:[
+     {name:'Pet'},{name:'Pawprint'},{name:'Animal care'},
+     {name:'paw-print',lib:'lucide'},{name:'dog',lib:'lucide'},{name:'heart',lib:'lucide'},
+     {name:'dog',lib:'tabler'},{name:'cat',lib:'tabler'},{name:'paw',lib:'tabler'},
+     {name:'paw-print',lib:'phosphor',weight:'bold'},{name:'dog',lib:'phosphor',weight:'fill'},
+     {name:'cat',lib:'phosphor',weight:'fill'},{name:'paw-print',lib:'phosphor',weight:'thin'},
+   ], bias:'warm'},
+  {cat:'hostel', kw:['hostel','jugendherberge','backpacker','auberge'],
+   icons:[
+     {name:'Bunk bed'},{name:'Backpack'},{name:'Hotel'},
+     {name:'backpack',lib:'lucide'},{name:'compass',lib:'lucide'},{name:'map-pin',lib:'lucide'},
+     {name:'backpack',lib:'tabler'},{name:'door',lib:'tabler'},{name:'bunk-bed',lib:'tabler'},
+     {name:'backpack',lib:'phosphor',weight:'bold'},{name:'compass',lib:'phosphor',weight:'fill'},
+     {name:'map-pin',lib:'phosphor',weight:'bold'},{name:'backpack',lib:'phosphor',weight:'thin'},
+   ], bias:'vibrant'},
   {cat:'apartment', kw:['apartment','aparthotel','wohnung','flat','ferienwohnung'],
-   icons:[{name:'Apartment'},{name:'Building'},{name:'Key'}],bias:'cool'},
-  {cat:'villa',     kw:['villa','villas','chateau','manor','palazzo'],
-   icons:[{name:'Villa'},{name:'Resort'},{name:'Cottage'}],bias:'warm'},
-  {cat:'cabin',     kw:['cabin','chalet','bungalow','hutte','casita','cottage'],
-   icons:[{name:'Cabin'},{name:'Hut'},{name:'Tent_3'}],bias:'earth'},
-  {cat:'resort',    kw:['resort','palm','allinclusive','inclusive'],
-   icons:[{name:'Flip flops'},{name:'Coconut drink'},{name:'Sunbed'},{name:'Beach_2'},{name:'Sunset_2'}],bias:'warm'},
-  {cat:'golf',      kw:['golf','golfhotel','golfresort'],
-   icons:[{name:'Golf sticks'},{name:'Golf ball'},{name:'Golf field'},{name:'Flag'}],bias:'earth'},
-  {cat:'airport',   kw:['airport','flughafen','aeroport','aeroporto'],
-   icons:[{name:'Airplane'},{name:'Plane'},{name:'Take off'},{name:'Plane_2'}],bias:'cool'},
-  {cat:'casino',    kw:['casino','gambling','spielbank'],
-   icons:[{name:'Poker chip'},{name:'Dice'},{name:'Cards'}],bias:'vibrant'},
-  {cat:'capsule',   kw:['capsule','pod','micro'],
-   icons:[{name:'Bed'},{name:'Double bed'},{name:'Hotel bed'}],bias:'cool'},
-  {cat:'hotel',     kw:['hotel','inn','lodge','herberge','motel'],
-   icons:[{name:'Hotel_2'},{name:'Double bed_2'},{name:'Location'},{name:'Key card'}],bias:null},
+   icons:[
+     {name:'Apartment'},{name:'Building'},{name:'Key'},
+     {name:'building-2',lib:'lucide'},{name:'key',lib:'lucide'},{name:'home',lib:'lucide'},
+     {name:'building',lib:'tabler'},{name:'key',lib:'tabler'},{name:'door',lib:'tabler'},
+     {name:'buildings',lib:'phosphor',weight:'bold'},{name:'key',lib:'phosphor',weight:'fill'},
+     {name:'house-line',lib:'phosphor',weight:'bold'},{name:'key',lib:'phosphor',weight:'thin'},
+   ], bias:'cool'},
+  {cat:'villa', kw:['villa','villas','chateau','manor','palazzo'],
+   icons:[
+     {name:'Villa'},{name:'Resort'},{name:'Cottage'},
+     {name:'home',lib:'lucide'},{name:'tree-palm',lib:'lucide'},{name:'star',lib:'lucide'},
+     {name:'home',lib:'tabler'},{name:'trees',lib:'tabler'},{name:'building-estate',lib:'tabler'},
+     {name:'house-line',lib:'phosphor',weight:'bold'},{name:'tree-palm',lib:'phosphor',weight:'fill'},
+     {name:'star',lib:'phosphor',weight:'fill'},{name:'house-line',lib:'phosphor',weight:'thin'},
+   ], bias:'warm'},
+  {cat:'cabin', kw:['cabin','chalet','bungalow','hutte','casita','cottage'],
+   icons:[
+     {name:'Cabin'},{name:'Hut'},{name:'Tent_3'},
+     {name:'tree-pine',lib:'lucide'},{name:'home',lib:'lucide'},{name:'mountain',lib:'lucide'},
+     {name:'trees',lib:'tabler'},{name:'tree',lib:'tabler'},{name:'chalet',lib:'tabler'},
+     {name:'tree-evergreen',lib:'phosphor',weight:'bold'},{name:'house',lib:'phosphor',weight:'fill'},
+     {name:'mountains',lib:'phosphor',weight:'bold'},{name:'tree-evergreen',lib:'phosphor',weight:'thin'},
+   ], bias:'earth'},
+  {cat:'resort', kw:['resort','palm','allinclusive','inclusive'],
+   icons:[
+     {name:'Flip flops'},{name:'Coconut drink'},{name:'Sunbed'},{name:'Beach_2'},{name:'Sunset_2'},
+     {name:'tree-palm',lib:'lucide'},{name:'wine',lib:'lucide'},{name:'sun',lib:'lucide'},
+     {name:'beach',lib:'tabler'},{name:'glass-cocktail',lib:'tabler'},{name:'sun',lib:'tabler'},
+     {name:'martini',lib:'phosphor',weight:'bold'},{name:'island',lib:'phosphor',weight:'fill'},
+     {name:'sun-horizon',lib:'phosphor',weight:'fill'},{name:'martini',lib:'phosphor',weight:'thin'},
+   ], bias:'warm'},
+  {cat:'golf', kw:['golf','golfhotel','golfresort'],
+   icons:[
+     {name:'Golf sticks'},{name:'Golf ball'},{name:'Golf field'},{name:'Flag'},
+     {name:'flag',lib:'lucide'},{name:'target',lib:'lucide'},{name:'circle-dot',lib:'lucide'},
+     {name:'golf',lib:'tabler'},{name:'flag',lib:'tabler'},{name:'target',lib:'tabler'},
+     {name:'flag-pennant',lib:'phosphor',weight:'bold'},{name:'golf',lib:'phosphor',weight:'fill'},
+     {name:'target',lib:'phosphor',weight:'bold'},{name:'golf',lib:'phosphor',weight:'thin'},
+   ], bias:'earth'},
+  {cat:'airport', kw:['airport','flughafen','aeroport','aeroporto'],
+   icons:[
+     {name:'Airplane'},{name:'Plane'},{name:'Take off'},{name:'Plane_2'},
+     {name:'plane',lib:'lucide'},{name:'plane-takeoff',lib:'lucide'},{name:'plane-landing',lib:'lucide'},
+     {name:'plane',lib:'tabler'},{name:'plane-departure',lib:'tabler'},{name:'plane-arrival',lib:'tabler'},
+     {name:'airplane',lib:'phosphor',weight:'bold'},{name:'airplane-takeoff',lib:'phosphor',weight:'fill'},
+     {name:'airplane-landing',lib:'phosphor',weight:'bold'},{name:'airplane',lib:'phosphor',weight:'thin'},
+   ], bias:'cool'},
+  {cat:'casino', kw:['casino','gambling','spielbank'],
+   icons:[
+     {name:'Poker chip'},{name:'Dice'},{name:'Cards'},
+     {name:'dice-5',lib:'lucide'},{name:'star',lib:'lucide'},{name:'zap',lib:'lucide'},
+     {name:'poker-chip',lib:'tabler'},{name:'cards',lib:'tabler'},{name:'dice',lib:'tabler'},
+     {name:'poker-chip',lib:'phosphor',weight:'bold'},{name:'dice-five',lib:'phosphor',weight:'fill'},
+     {name:'spade',lib:'phosphor',weight:'fill'},{name:'dice-five',lib:'phosphor',weight:'thin'},
+   ], bias:'vibrant'},
+  {cat:'capsule', kw:['capsule','pod','micro'],
+   icons:[
+     {name:'Bed'},{name:'Double bed'},{name:'Hotel bed'},
+     {name:'bed',lib:'lucide'},{name:'moon',lib:'lucide'},{name:'zap',lib:'lucide'},
+     {name:'bed',lib:'tabler'},{name:'moon',lib:'tabler'},{name:'minimize',lib:'tabler'},
+     {name:'bed',lib:'phosphor',weight:'bold'},{name:'moon',lib:'phosphor',weight:'fill'},
+     {name:'bed',lib:'phosphor',weight:'thin'},{name:'moon',lib:'phosphor',weight:'thin'},
+   ], bias:'cool'},
+  {cat:'hotel', kw:['hotel','inn','lodge','herberge','motel'],
+   icons:[
+     {name:'Hotel_2'},{name:'Double bed_2'},{name:'Location'},{name:'Key card'},
+     {name:'building',lib:'lucide'},{name:'bed',lib:'lucide'},{name:'key',lib:'lucide'},
+     {name:'building',lib:'tabler'},{name:'bed',lib:'tabler'},{name:'star',lib:'tabler'},
+     {name:'building',lib:'phosphor',weight:'bold'},{name:'bed',lib:'phosphor',weight:'fill'},
+     {name:'key',lib:'phosphor',weight:'bold'},{name:'building',lib:'phosphor',weight:'thin'},
+   ], bias:null},
 ];];
 
 const STRIP_PREFIXES = [
@@ -3757,49 +3901,110 @@ function iconTransform(key) {
 // ═══════════════════════════════════════════════════════════
 // ICON SYMBOLS — lookup by Figma layer id, normalize via getBBox
 // ═══════════════════════════════════════════════════════════
+// CDN URL builders
+const CDN_URL = {
+  lucide:   n     => `https://unpkg.com/lucide-static@latest/icons/${n}.svg`,
+  tabler:   n     => `https://unpkg.com/@tabler/icons@latest/icons/outline/${n}.svg`,
+  phosphor: (n,w) => `https://unpkg.com/@phosphor-icons/core@2.1.1/assets/${w}/${n}-${w}.svg`,
+};
+
+// Parse SVG inner content and wrap with scale transform
+function wrapCdnIcon(svgText, isStroke, sourceSize) {
+  const scale = 16 / sourceSize;
+  const inner = svgText
+    .replace(/<\?xml[^>]*\?>/g, '')
+    .replace(/<!DOCTYPE[^>]*>/g, '')
+    .replace(/<svg[^>]*>/g, '')
+    .replace(/<\/svg>/g, '')
+    .trim()
+    .replace(/\s*fill="[^"]*"/g, '')
+    .replace(/\s*stroke="[^"]*"/g, '')
+    .replace(/\s*stroke-width="[^"]*"/g, '');
+  return { paths: `<g transform="scale(${scale.toFixed(4)})">${inner}</g>`, stroke: isStroke };
+}
+
 async function loadIconsSprite() {
   const bar=document.getElementById('prog-bar'), lbl=document.getElementById('prog-label');
   try {
     lbl.textContent='Ініціалізація іконок…';
-    bar.style.width='30%';
+    bar.style.width='20%';
     await tick();
 
+    // ── Phase 1: sprite (getBBox) ──
     const spriteDiv=document.getElementById('icons-sprite');
     if(!spriteDiv) throw new Error('icons-sprite not found');
-
-    // Must be visible (not display:none) for getBBox() to work
     spriteDiv.style.display='block';
     const svgEl=spriteDiv.querySelector('svg');
     if(!svgEl) throw new Error('svg not found in sprite');
 
     lbl.textContent='Парсинг символів…';
-    bar.style.width='60%';
+    bar.style.width='40%';
     await tick();
 
     let built=0, missing=[];
     for(const entry of ICON_MAP){
       entry.icons.forEach((ico, idx)=>{
-        // Attribute selector handles names with spaces and special chars
-        const el=svgEl.querySelector(`[id="${ico.name.replace(/\/g,'\\').replace(/"/g,'\"')}"]`);
+        if(ico.lib) return; // CDN icons handled separately
+        const el=svgEl.querySelector(`[id="${ico.name.replace(/\\/g,'\\\\').replace(/"/g,'\\"')}"]`);
         if(!el){ missing.push(ico.name); return; }
-
         const bbox=el.getBBox();
         if(!bbox.width||!bbox.height){ missing.push(ico.name+'(empty bbox)'); return; }
-
-        // Strip hardcoded colors — CSS class will control fill
         const inner=el.innerHTML
           .replace(/\s*fill="[^"]*"/g,'')
           .replace(/\s*stroke="[^"]*"/g,'');
-
-        // Normalize: scale to fit 16×16, translate origin to (0,0)
         const scale=Math.min(16/bbox.width, 16/bbox.height);
-        iconSymbols[`${entry.cat}_${idx}`]=
-          `<g transform="translate(${(-bbox.x*scale).toFixed(2)},${(-bbox.y*scale).toFixed(2)}) scale(${scale.toFixed(4)})">${inner}</g>`;
+        iconSymbols[`${entry.cat}_${idx}`]={
+          paths:`<g transform="translate(${(-bbox.x*scale).toFixed(2)},${(-bbox.y*scale).toFixed(2)}) scale(${scale.toFixed(4)})">${inner}</g>`,
+          stroke:false
+        };
         built++;
       });
     }
 
-    if(missing.length) console.warn('Missing icons:', missing);
+    if(missing.length) console.warn('Missing sprite icons:', missing);
+
+    // ── Phase 2: CDN icons (async, with localStorage cache) ──
+    lbl.textContent='Завантаження CDN іконок…';
+    bar.style.width='60%';
+    await tick();
+
+    const cdnFetches=[];
+    for(const entry of ICON_MAP){
+      entry.icons.forEach((ico, idx)=>{
+        if(!ico.lib) return;
+        const key=`${entry.cat}_${idx}`;
+        let url;
+        if(ico.lib==='phosphor') url=CDN_URL.phosphor(ico.name, ico.weight||'regular');
+        else url=CDN_URL[ico.lib](ico.name);
+
+        const cacheKey='icon_v2_'+url;
+        const cached=localStorage.getItem(cacheKey);
+        if(cached){
+          const isStroke=ico.lib==='lucide'||ico.lib==='tabler';
+          const srcSize=ico.lib==='phosphor'?256:24;
+          iconSymbols[key]=wrapCdnIcon(cached, isStroke, srcSize);
+          built++;
+          return;
+        }
+
+        cdnFetches.push(
+          fetch(url).then(r=>{
+            if(!r.ok) throw new Error('404');
+            return r.text();
+          }).then(svg=>{
+            try{ localStorage.setItem(cacheKey, svg); }catch(e){}
+            const isStroke=ico.lib==='lucide'||ico.lib==='tabler';
+            const srcSize=ico.lib==='phosphor'?256:24;
+            iconSymbols[key]=wrapCdnIcon(svg, isStroke, srcSize);
+            built++;
+          }).catch(()=>{ missing.push(`${ico.lib}:${ico.name}`); })
+        );
+      });
+    }
+
+    await Promise.all(cdnFetches);
+
+    if(missing.length) console.warn('Missing CDN icons:', missing);
     bar.style.width='100%';
     bar.style.background='var(--green)';
     lbl.textContent=`✓ ${built} символів готові`;
@@ -3807,7 +4012,7 @@ async function loadIconsSprite() {
     document.getElementById('btn-gen').disabled=false;
   } catch(err) {
     console.error('loadIconsSprite:',err);
-    lbl.textContent=`⚠ Помилка спрайту — буде текст`;
+    lbl.textContent=`⚠ Помилка іконок — буде текст`;
     iconsReady=true;
     document.getElementById('btn-gen').disabled=false;
   }
@@ -3826,7 +4031,10 @@ function buildPreviewSVG(entry, gId) {
   const gName=`G${gId}`;
   const gradDef=buildGradDef(gName, entry.gradient, c1, c2);
   const content=buildContent(entry, gId, ic, true);
-  const style=`<style>.bg${gId}{}.ic${gId}{fill:${ic};stroke:none}.lb${gId}{fill:${ic}}@media(prefers-color-scheme:dark){.bg${gId}{filter:brightness(.62) saturate(.82)}.ic${gId}{fill:rgba(255,255,255,.92)!important}.lb${gId}{fill:rgba(255,255,255,.92)!important}}</style>`;
+  const sym=entry.iconKey?resolveIcon(entry.iconKey,entry.category):null;
+  const icStyle=sym&&sym.stroke?`fill:none;stroke:${ic};stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round`:`fill:${ic};stroke:none`;
+  const icStyleDark=sym&&sym.stroke?`fill:none!important;stroke:rgba(255,255,255,.92)!important;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round`:`fill:rgba(255,255,255,.92)!important`;
+  const style=`<style>.bg${gId}{}.ic${gId}{${icStyle}}.lb${gId}{fill:${ic}}@media(prefers-color-scheme:dark){.bg${gId}{filter:brightness(.62) saturate(.82)}.ic${gId}{${icStyleDark}}.lb${gId}{fill:rgba(255,255,255,.92)!important}}</style>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs>${gradDef}</defs>${style}<g class="bg${gId}" fill="url(#${gName})">${shapeEl(entry.shape)}</g>${content}</svg>`;
 }
 
@@ -3837,7 +4045,10 @@ function buildManifestSVG(entry) {
   const ic=iconColor(c1);
   const gradDef=buildGradDef('G', entry.gradient, c1, c2);
   const content=buildContent(entry, 'm', ic, false);
-  const style=`<style>.bgm{}.icm{fill:${ic};stroke:none}.lbm{fill:${ic}}@media(prefers-color-scheme:dark){.bgm{filter:brightness(.62) saturate(.82)}.icm{fill:rgba(255,255,255,.92)!important}.lbm{fill:rgba(255,255,255,.92)!important}}</style>`;
+  const symM=entry.iconKey?resolveIcon(entry.iconKey,entry.category):null;
+  const icStyleM=symM&&symM.stroke?`fill:none;stroke:${ic};stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round`:`fill:${ic};stroke:none`;
+  const icStyleDarkM=symM&&symM.stroke?`fill:none!important;stroke:rgba(255,255,255,.92)!important;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round`:`fill:rgba(255,255,255,.92)!important`;
+  const style=`<style>.bgm{}.icm{${icStyleM}}.lbm{fill:${ic}}@media(prefers-color-scheme:dark){.bgm{filter:brightness(.62) saturate(.82)}.icm{${icStyleDarkM}}.lbm{fill:rgba(255,255,255,.92)!important}}</style>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs>${gradDef}</defs>${style}<g class="bgm" fill="url(#G)">${shapeEl(entry.shape)}</g>${content}</svg>`;
 }
 
@@ -3853,26 +4064,27 @@ function buildGradDef(id, grad, c1, c2) {
   return `<linearGradient id="${id}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/></linearGradient>`;
 }
 
+function resolveIcon(iconKey, category) {
+  let sym = iconSymbols[iconKey] || null;
+  if (!sym && category) {
+    const catEntry = ICON_MAP.find(e => e.cat === category);
+    if (catEntry) {
+      for (let i = 0; i < catEntry.icons.length; i++) {
+        const k = `${catEntry.cat}_${i}`;
+        if (iconSymbols[k]) { sym = iconSymbols[k]; break; }
+      }
+    }
+  }
+  return sym; // {paths, stroke} or null
+}
+
 function buildContent(entry, suffix, ic, forDom) {
   const icClass=`ic${suffix}`, lbClass=`lb${suffix}`;
 
   if(!entry.useText && entry.iconKey){
-    // Look up pre-built symbol by semantic key 'cat_idx'
-    let paths=iconSymbols[entry.iconKey]||'';
-
-    // Fallback: try first available symbol from same category
-    if(!paths && entry.category){
-      const catEntry=ICON_MAP.find(e=>e.cat===entry.category);
-      if(catEntry){
-        for(let i=0;i<catEntry.icons.length;i++){
-          const k=`${catEntry.cat}_${i}`;
-          if(iconSymbols[k]){ paths=iconSymbols[k]; break; }
-        }
-      }
-    }
-
-    if(paths){
-      return `<g transform="${iconTransform(entry.shape)}" class="${icClass}">${paths}</g>`;
+    const sym = resolveIcon(entry.iconKey, entry.category);
+    if(sym){
+      return `<g transform="${iconTransform(entry.shape)}" class="${icClass}">${sym.paths}</g>`;
     }
   }
 
