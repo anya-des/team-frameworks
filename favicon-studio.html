@@ -2047,7 +2047,7 @@ const STRIP_PREFIXES = [
 // ═══════════════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════════════
-let iconLookup    = {};   // 'x_y' → inner paths string (from icons.svg sprite)
+let iconSymbols   = {};   // 'cat_idx' → normalized SVG paths (from icons.svg sprite)
 let existingMFest = {};   // domain → entry (from loaded manifest)
 let usedCombos    = new Set();
 let generated     = {};   // domain → entry (current session)
@@ -2135,7 +2135,8 @@ function iconTransform(key) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// ICON LOADING FROM icons.svg SPRITE
+// ICON SYMBOLS FROM icons.svg SPRITE
+// Builds iconSymbols['cat_idx'] = normalized SVG path content
 // ═══════════════════════════════════════════════════════════
 async function loadIconsSprite() {
   const bar=document.getElementById('prog-bar'), lbl=document.getElementById('prog-label');
@@ -2148,11 +2149,11 @@ async function loadIconsSprite() {
     const svgEl=spriteDiv&&spriteDiv.querySelector('svg');
     if(!svgEl) throw new Error('icons-sprite not found');
 
-    lbl.textContent='Парсинг спрайту…';
+    lbl.textContent='Парсинг символів…';
     bar.style.width='60%';
     await tick();
 
-    // Build clipId → {x,y} map from defs
+    // 1. Build clipId → {x, y} from defs
     const clipMap={};
     svgEl.querySelectorAll('clipPath').forEach(cp=>{
       const rect=cp.querySelector('rect');
@@ -2163,29 +2164,41 @@ async function loadIconsSprite() {
       clipMap[cp.id]={x:+m[1],y:+m[2]};
     });
 
-    // Extract paths per icon position
+    // 2. Build position → <g> element map from sprite
+    const posMap={};  // 'x_y' → DOM group element
     svgEl.querySelectorAll('[clip-path]').forEach(g=>{
       const ref=g.getAttribute('clip-path');
       const cpId=ref.replace(/^url\(#(.+)\)$/,'$1');
       const pos=clipMap[cpId];
       if(!pos) return;
-      const key=`${pos.x}_${pos.y}`;
-      // Strip hardcoded fill/stroke so CSS class controls color
-      const inner=g.innerHTML
-        .replace(/\s*fill="[^"]*"/g,'')
-        .replace(/\s*stroke="[^"]*"/g,'');
-      iconLookup[key]=`<g transform="translate(${-pos.x},${-pos.y})">${inner}</g>`;
+      posMap[`${pos.x}_${pos.y}`]=g;
     });
 
-    const count=Object.keys(iconLookup).length;
+    // 3. For each ICON_MAP entry, build named symbol: iconSymbols['cat_idx']
+    let built=0;
+    for(const entry of ICON_MAP){
+      entry.icons.forEach((ico, idx)=>{
+        const g=posMap[`${ico.x}_${ico.y}`];
+        if(!g) return;
+        // Strip hardcoded fill/stroke — CSS class will control color
+        const inner=g.innerHTML
+          .replace(/\s*fill="[^"]*"/g,'')
+          .replace(/\s*stroke="[^"]*"/g,'');
+        // Normalize to origin: translate(-x,-y) shifts icon to 0,0 within viewBox 0 0 16 16
+        iconSymbols[`${entry.cat}_${idx}`]=
+          `<g transform="translate(${-ico.x},${-ico.y})">${inner}</g>`;
+        built++;
+      });
+    }
+
     bar.style.width='100%';
     bar.style.background='var(--green)';
-    lbl.textContent=`✓ ${count} іконок з icons.svg`;
+    lbl.textContent=`✓ ${built} символів готові`;
     iconsReady=true;
     document.getElementById('btn-gen').disabled=false;
   } catch(err) {
     console.error('loadIconsSprite:',err);
-    lbl.textContent=`⚠ icons.svg не завантажено — буде текст`;
+    lbl.textContent=`⚠ Помилка спрайту — буде текст`;
     iconsReady=true;
     document.getElementById('btn-gen').disabled=false;
   }
@@ -2235,17 +2248,17 @@ function buildGradDef(id, grad, c1, c2) {
 function buildContent(entry, suffix, ic, forDom) {
   const icClass=`ic${suffix}`, lbClass=`lb${suffix}`;
 
-  if(!entry.useText && entry.iconCoords){
-    const [x,y]=entry.iconCoords;
-    let paths=iconLookup[`${x}_${y}`]||'';
+  if(!entry.useText && entry.iconKey){
+    // Look up pre-built symbol by semantic key 'cat_idx'
+    let paths=iconSymbols[entry.iconKey]||'';
 
-    // Fallback: try other icons from same category
+    // Fallback: try first available symbol from same category
     if(!paths && entry.category){
       const catEntry=ICON_MAP.find(e=>e.cat===entry.category);
       if(catEntry){
-        for(const ico of catEntry.icons){
-          const k=`${ico.x}_${ico.y}`;
-          if(iconLookup[k]){ paths=iconLookup[k]; break; }
+        for(let i=0;i<catEntry.icons.length;i++){
+          const k=`${catEntry.cat}_${i}`;
+          if(iconSymbols[k]){ paths=iconSymbols[k]; break; }
         }
       }
     }
@@ -2305,19 +2318,18 @@ async function computeEntry(domain, abbr, offset) {
   // No keyword matched → text mode (Abbr), no icon
   if(!ce){
     return {
-      abbr, category:'text', iconCoords:null, useText:true,
+      abbr, category:'text', iconKey:null, useText:true,
       palette, palette_idx, shape, gradient,
       combo_key:`${palette}-${shape}-${gradient}-text`,
     };
   }
 
   const iconIdx = (h[5]^h[11]^h[17]+offset)%ce.icons.length;
-  const ico     = ce.icons[iconIdx];
 
   return {
-    abbr, category:ce.cat, iconCoords:[ico.x,ico.y], useText:false,
+    abbr, category:ce.cat, iconKey:`${ce.cat}_${iconIdx}`, useText:false,
     palette, palette_idx, shape, gradient,
-    combo_key:`${palette}-${shape}-${gradient}-${ico.x}_${ico.y}`,
+    combo_key:`${palette}-${shape}-${gradient}-${ce.cat}_${iconIdx}`,
   };
 }
 
