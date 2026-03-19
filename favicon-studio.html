@@ -3799,7 +3799,7 @@ const ICON_MAP = [
      {name:'building',lib:'phosphor',weight:'bold'},{name:'bed',lib:'phosphor',weight:'fill'},
      {name:'key',lib:'phosphor',weight:'bold'},{name:'building',lib:'phosphor',weight:'thin'},
    ], bias:null},
-];];
+];
 
 const STRIP_PREFIXES = [
   'bedandbreakfast','bed-and-breakfast','bedebreakfast','beds-and-breakfast',
@@ -3978,7 +3978,8 @@ async function loadIconsSprite() {
         else url=CDN_URL[ico.lib](ico.name);
 
         const cacheKey='icon_v2_'+url;
-        const cached=localStorage.getItem(cacheKey);
+        let cached=null;
+        try{ cached=localStorage.getItem(cacheKey); }catch(e){}
         if(cached){
           const isStroke=ico.lib==='lucide'||ico.lib==='tabler';
           const srcSize=ico.lib==='phosphor'?256:24;
