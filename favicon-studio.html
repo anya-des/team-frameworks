@@ -324,55 +324,59 @@ const PAL_NAMES = ['warm','pastel','cool','earth','vibrant'];
 const SHAPES  = ['circle','soft','pill','squircle','sharp','round','scallop-10','scallop-14'];
 const GRADS   = ['diagonal','reverse-diagonal','vertical','radial-corner','radial-center','horizontal'];
 
+// Icons from icons.svg (614×1370px Figma export, all 16×16px at absolute x,y coords)
+// icons[i] = {x, y} — top-left corner of the 16×16 icon in the sprite
+// ⚠ Порядок координат відповідає clip-path індексам 0–181 з icons.svg
+// Перевір візуально і переставляй індекси при потребі
 const ICON_MAP = [
   {cat:'spa',       kw:['spa','thermal','terme','therme','balnear'],
-   icons:[{n:'flower-2',l:'lucide'},{n:'hand-finger',l:'tabler'},{n:'droplets',l:'lucide'}],bias:'pastel'},
+   icons:[{x:35,y:652},{x:61,y:652},{x:8,y:121}],bias:'pastel'},
   {cat:'wellness',  kw:['wellness','relax','yoga','meditation','retreat','thalasso'],
-   icons:[{n:'leaf',l:'lucide'},{n:'heart-pulse',l:'lucide'},{n:'wind',l:'lucide'}],bias:'pastel'},
+   icons:[{x:62,y:121},{x:90,y:121},{x:121,y:121}],bias:'pastel'},
   {cat:'beach',     kw:['beach','strand','mare','plage','seaside','costa','lido'],
-   icons:[{n:'umbrella-beach',l:'tabler'},{n:'sun',l:'lucide'},{n:'palm-tree',l:'lucide'},{n:'waves',l:'lucide'},{n:'sailboat',l:'lucide'}],bias:'warm'},
+   icons:[{x:8,y:722},{x:32,y:722},{x:80,y:722},{x:81,y:757},{x:108,y:757}],bias:'warm'},
   {cat:'ski',       kw:['ski','snow','montagne','mountain','berg','alpin','nieve'],
-   icons:[{n:'snowflake',l:'lucide'},{n:'mountain-snow',l:'lucide'},{n:'ski-jumping',l:'tabler'}],bias:'cool'},
+   icons:[{x:8,y:547},{x:30,y:547},{x:108,y:547}],bias:'cool'},
   {cat:'breakfast', kw:['breakfast','bedandbreakfast','beb','bedebreakfast','colazione','petitdejeuner','fruhstuck'],
-   icons:[{n:'coffee',l:'lucide'},{n:'croissant',l:'lucide'},{n:'cup-saucer',l:'tabler'}],bias:'warm'},
+   icons:[{x:8,y:49},{x:36,y:49},{x:62,y:49}],bias:'warm'},
   {cat:'romantic',  kw:['romantic','amore','love','couples','honeymoon','amour','romance'],
-   icons:[{n:'heart',l:'lucide'},{n:'heart-handshake',l:'lucide'},{n:'sparkles',l:'lucide'}],bias:'pastel'},
+   icons:[{x:89,y:49},{x:118,y:49},{x:147,y:49}],bias:'pastel'},
   {cat:'camping',   kw:['camping','campground','camp','kemping','campismo'],
-   icons:[{n:'tent',l:'lucide'},{n:'tree-pine',l:'lucide'},{n:'sun',l:'lucide'},{n:'campfire',l:'lucide'},{n:'compass',l:'lucide'}],bias:'earth'},
+   icons:[{x:176,y:49},{x:206,y:49},{x:236,y:49},{x:8,y:477},{x:38,y:477}],bias:'earth'},
   {cat:'glamping',  kw:['glamping'],
-   icons:[{n:'tent',l:'lucide'},{n:'leaf',l:'lucide'},{n:'star',l:'lucide'}],bias:'earth'},
+   icons:[{x:57,y:477},{x:88,y:477},{x:133,y:477}],bias:'earth'},
   {cat:'luxury',    kw:['luxury','luxe','lusso','luxus','premium','grand'],
-   icons:[{n:'gem',l:'lucide'},{n:'crown',l:'lucide'},{n:'star',l:'lucide'}],bias:null},
+   icons:[{x:8,y:442},{x:71,y:442},{x:96,y:442}],bias:null},
   {cat:'boutique',  kw:['boutique','design','lifestyle'],
-   icons:[{n:'sparkles',l:'lucide'},{n:'gem',l:'lucide'},{n:'flower-2',l:'lucide'}],bias:null},
+   icons:[{x:119,y:442},{x:146,y:442},{x:8,y:229}],bias:null},
   {cat:'pool',      kw:['pool','piscina','piscine','zwembad'],
-   icons:[{n:'pool',l:'tabler'},{n:'waves',l:'lucide'},{n:'droplets',l:'lucide'},{n:'swim',l:'tabler'}],bias:'cool'},
+   icons:[{x:43,y:229},{x:69,y:229},{x:95,y:229},{x:31,y:14}],bias:'cool'},
   {cat:'waterpark', kw:['waterpark','aquapark','wasserpark'],
-   icons:[{n:'waves',l:'lucide'},{n:'droplets',l:'lucide'},{n:'sun',l:'lucide'},{n:'ferris-wheel',l:'lucide'}],bias:'cool'},
+   icons:[{x:109,y:14},{x:131,y:14},{x:8,y:862},{x:104,y:862}],bias:'cool'},
   {cat:'family',    kw:['family','kinder','kids','enfant','bambini','children','familienhotel'],
-   icons:[{n:'users',l:'lucide'},{n:'baby',l:'lucide'},{n:'puzzle',l:'lucide'}],bias:'vibrant'},
+   icons:[{x:130,y:862},{x:230,y:862},{x:253,y:862}],bias:'vibrant'},
   {cat:'pet',       kw:['pet','dog','hund','animaux','perros','chien','haustier'],
-   icons:[{n:'paw-print',l:'lucide'},{n:'bone',l:'lucide'},{n:'dog',l:'lucide'}],bias:'warm'},
+   icons:[{x:274,y:862},{x:301,y:862},{x:321,y:862}],bias:'warm'},
   {cat:'hostel',    kw:['hostel','jugendherberge','backpacker','auberge'],
-   icons:[{n:'backpack',l:'lucide'},{n:'luggage',l:'lucide'},{n:'bunk-bed',l:'tabler'}],bias:'vibrant'},
+   icons:[{x:345,y:862},{x:388,y:862},{x:409,y:862}],bias:'vibrant'},
   {cat:'apartment', kw:['apartment','aparthotel','wohnung','flat','ferienwohnung'],
-   icons:[{n:'building',l:'lucide'},{n:'key-round',l:'lucide'},{n:'building-2',l:'lucide'}],bias:'cool'},
+   icons:[{x:453,y:862},{x:480,y:862},{x:503,y:862}],bias:'cool'},
   {cat:'villa',     kw:['villa','villas','chateau','manor','palazzo'],
-   icons:[{n:'landmark',l:'lucide'},{n:'home',l:'lucide'},{n:'tree-deciduous',l:'tabler'}],bias:'warm'},
+   icons:[{x:529,y:862},{x:8,y:582},{x:35,y:582}],bias:'warm'},
   {cat:'cabin',     kw:['cabin','chalet','bungalow','hutte','casita','cottage'],
-   icons:[{n:'home',l:'lucide'},{n:'tree-pine',l:'lucide'},{n:'tent',l:'lucide'}],bias:'earth'},
+   icons:[{x:62,y:582},{x:89,y:582},{x:170,y:582}],bias:'earth'},
   {cat:'resort',    kw:['resort','palm','allinclusive','inclusive'],
-   icons:[{n:'palm-tree',l:'lucide'},{n:'concierge-bell',l:'lucide'},{n:'sailboat',l:'lucide'},{n:'sun',l:'lucide'},{n:'umbrella-beach',l:'tabler'}],bias:'warm'},
+   icons:[{x:8,y:85},{x:65,y:86},{x:78,y:193},{x:149,y:193},{x:172,y:193}],bias:'warm'},
   {cat:'golf',      kw:['golf','golfhotel','golfresort'],
-   icons:[{n:'golf',l:'tabler'},{n:'flag',l:'lucide'},{n:'map',l:'lucide'}],bias:'earth'},
+   icons:[{x:228,y:193},{x:250,y:193},{x:8,y:299}],bias:'earth'},
   {cat:'airport',   kw:['airport','flughafen','aeroport','aeroporto'],
-   icons:[{n:'plane-takeoff',l:'lucide'},{n:'plane-landing',l:'lucide'},{n:'plane',l:'lucide'}],bias:'cool'},
+   icons:[{x:36,y:299},{x:83,y:299},{x:105,y:299}],bias:'cool'},
   {cat:'casino',    kw:['casino','gambling','spielbank'],
-   icons:[{n:'dice-5',l:'lucide'},{n:'spade',l:'lucide'},{n:'club',l:'lucide'}],bias:'vibrant'},
+   icons:[{x:129,y:302},{x:8,y:158},{x:33,y:158}],bias:'vibrant'},
   {cat:'capsule',   kw:['capsule','pod','micro'],
-   icons:[{n:'bed',l:'tabler'},{n:'box',l:'lucide'},{n:'building-2',l:'lucide'}],bias:'cool'},
+   icons:[{x:58,y:158},{x:88,y:158},{x:110,y:156}],bias:'cool'},
   {cat:'hotel',     kw:['hotel','inn','lodge','herberge','motel'],
-   icons:[{n:'building-2',l:'lucide'},{n:'key-round',l:'lucide'},{n:'bed',l:'tabler'},{n:'map-pin',l:'lucide'}],bias:null},
+   icons:[{x:8,y:264},{x:33,y:264},{x:58,y:264},{x:81,y:264}],bias:null},
 ];
 
 const STRIP_PREFIXES = [
@@ -381,15 +385,11 @@ const STRIP_PREFIXES = [
   'travel','best','the','all','top','find','visit','motel','inn','lodge',
 ];
 
-const CDN = {
-  lucide: n=>`https://unpkg.com/lucide-static@latest/icons/${n}.svg`,
-  tabler: n=>`https://unpkg.com/@tabler/icons@latest/icons/outline/${n}.svg`,
-};
 
 // ═══════════════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════════════
-let iconCache     = {};   // 'lib:name' → inner SVG string
+let iconLookup    = {};   // 'x_y' → inner paths string (from icons.svg sprite)
 let existingMFest = {};   // domain → entry (from loaded manifest)
 let usedCombos    = new Set();
 let generated     = {};   // domain → entry (current session)
@@ -471,53 +471,68 @@ function shapeEl(key) {
 }
 
 function iconTransform(key) {
-  return key.startsWith('scallop') ? 'translate(9,9) scale(0.583)' : 'translate(7,7) scale(0.75)';
+  // icons.svg icons are 16×16; favicon is 32×32
+  // center 14×14 effective: scale(0.875) translate to (9,9)
+  return key.startsWith('scallop') ? 'translate(10,10) scale(0.75)' : 'translate(8,8) scale(0.875)';
 }
 
 // ═══════════════════════════════════════════════════════════
-// ICON LOADING
+// ICON LOADING FROM icons.svg SPRITE
 // ═══════════════════════════════════════════════════════════
-function allIconKeys() {
-  const s=new Set();
-  for(const e of ICON_MAP) for(const i of e.icons) s.add(`${i.l}:${i.n}`);
-  return [...s];
-}
-
-async function fetchOneIcon(lib, name) {
-  const key=`${lib}:${name}`, ck=`fav-icon-v2-${key}`; // v2 prefix busts old poisoned cache (old key had circle stub)
-  const cached=localStorage.getItem(ck);
-  if(cached){ iconCache[key]=cached; return; } // only non-empty strings are stored on success
-  try{
-    const res=await fetch(CDN[lib](name));
-    if(!res.ok) throw new Error(res.status);
-    const txt=await res.text();
-    const inner=txt.replace(/<svg[^>]*>/,'').replace(/<\/svg>/,'').trim();
-    iconCache[key]=inner;
-    try{ localStorage.setItem(ck,inner); }catch(e){}
-  }catch(e){
-    console.warn(`icon fail ${key}`,e);
-    iconCache[key]=''; // falsy → buildContent uses Abbr text; NOT persisted so next session retries
-  }
-}
-
-async function loadAllIcons() {
-  const keys=allIconKeys();
+async function loadIconsSprite() {
   const bar=document.getElementById('prog-bar'), lbl=document.getElementById('prog-label');
-  let done=0;
-  const BATCH=6;
-  for(let i=0;i<keys.length;i+=BATCH){
-    const batch=keys.slice(i,i+BATCH);
-    await Promise.all(batch.map(k=>{ const[l,n]=k.split(':'); return fetchOneIcon(l,n); }));
-    done+=batch.length;
-    const pct=Math.round(done/keys.length*100);
-    bar.style.width=pct+'%';
-    lbl.textContent=`${done}/${keys.length} · ${pct}%`;
+  try {
+    lbl.textContent='Завантаження icons.svg…';
+    bar.style.width='30%';
+    const res=await fetch('icons.svg');
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const text=await res.text();
+
+    lbl.textContent='Парсинг спрайту…';
+    bar.style.width='60%';
     await tick();
+
+    const parser=new DOMParser();
+    const doc=parser.parseFromString(text,'image/svg+xml');
+    const svgEl=doc.documentElement;
+
+    // Build clipId → {x,y} map from defs
+    const clipMap={};
+    svgEl.querySelectorAll('clipPath').forEach(cp=>{
+      const rect=cp.querySelector('rect');
+      if(!rect) return;
+      const t=rect.getAttribute('transform')||'';
+      const m=t.match(/translate\((\d+)[,\s]+(\d+)\)/);
+      if(!m) return;
+      clipMap[cp.id]={x:+m[1],y:+m[2]};
+    });
+
+    // Extract paths per icon position
+    svgEl.querySelectorAll('[clip-path]').forEach(g=>{
+      const ref=g.getAttribute('clip-path');
+      const cpId=ref.replace(/^url\(#(.+)\)$/,'$1');
+      const pos=clipMap[cpId];
+      if(!pos) return;
+      const key=`${pos.x}_${pos.y}`;
+      // Strip hardcoded fill/stroke so CSS class controls color
+      const inner=g.innerHTML
+        .replace(/\s*fill="[^"]*"/g,'')
+        .replace(/\s*stroke="[^"]*"/g,'');
+      iconLookup[key]=`<g transform="translate(${-pos.x},${-pos.y})">${inner}</g>`;
+    });
+
+    const count=Object.keys(iconLookup).length;
+    bar.style.width='100%';
+    bar.style.background='var(--green)';
+    lbl.textContent=`✓ ${count} іконок з icons.svg`;
+    iconsReady=true;
+    document.getElementById('btn-gen').disabled=false;
+  } catch(err) {
+    console.error('loadIconsSprite:',err);
+    lbl.textContent=`⚠ icons.svg не завантажено — буде текст`;
+    iconsReady=true;
+    document.getElementById('btn-gen').disabled=false;
   }
-  iconsReady=true;
-  document.getElementById('btn-gen').disabled=false;
-  lbl.textContent=`✓ ${keys.length} іконок готові`;
-  bar.style.background='var(--green)';
 }
 
 function tick(ms=0){ return new Promise(r=>setTimeout(r,ms)); }
@@ -534,7 +549,7 @@ function buildPreviewSVG(entry, gId) {
   const gName=`G${gId}`;
   const gradDef=buildGradDef(gName, entry.gradient, c1, c2);
   const content=buildContent(entry, gId, ic, true);
-  const style=`<style>.bg${gId}{}.ic${gId}{stroke:${ic};fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.lb${gId}{fill:${ic}}@media(prefers-color-scheme:dark){.bg${gId}{filter:brightness(.62) saturate(.82)}.ic${gId}{stroke:rgba(255,255,255,.92)!important}.lb${gId}{fill:rgba(255,255,255,.92)!important}}</style>`;
+  const style=`<style>.bg${gId}{}.ic${gId}{fill:${ic};stroke:none}.lb${gId}{fill:${ic}}@media(prefers-color-scheme:dark){.bg${gId}{filter:brightness(.62) saturate(.82)}.ic${gId}{fill:rgba(255,255,255,.92)!important}.lb${gId}{fill:rgba(255,255,255,.92)!important}}</style>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs>${gradDef}</defs>${style}<g class="bg${gId}" fill="url(#${gName})">${shapeEl(entry.shape)}</g>${content}</svg>`;
 }
 
@@ -545,7 +560,7 @@ function buildManifestSVG(entry) {
   const ic=iconColor(c1);
   const gradDef=buildGradDef('G', entry.gradient, c1, c2);
   const content=buildContent(entry, 'm', ic, false);
-  const style=`<style>.bgm{}.icm{stroke:${ic};fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.lbm{fill:${ic}}@media(prefers-color-scheme:dark){.bgm{filter:brightness(.62) saturate(.82)}.icm{stroke:rgba(255,255,255,.92)!important}.lbm{fill:rgba(255,255,255,.92)!important}}</style>`;
+  const style=`<style>.bgm{}.icm{fill:${ic};stroke:none}.lbm{fill:${ic}}@media(prefers-color-scheme:dark){.bgm{filter:brightness(.62) saturate(.82)}.icm{fill:rgba(255,255,255,.92)!important}.lbm{fill:rgba(255,255,255,.92)!important}}</style>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs>${gradDef}</defs>${style}<g class="bgm" fill="url(#G)">${shapeEl(entry.shape)}</g>${content}</svg>`;
 }
 
@@ -564,30 +579,28 @@ function buildGradDef(id, grad, c1, c2) {
 function buildContent(entry, suffix, ic, forDom) {
   const icClass=`ic${suffix}`, lbClass=`lb${suffix}`;
 
-  let paths = '';
-  if(!entry.useText && entry.icon){
-    // Try assigned icon first
-    const key=`${entry.lib}:${entry.icon}`;
-    paths = iconCache[key]||'';
+  if(!entry.useText && entry.iconCoords){
+    const [x,y]=entry.iconCoords;
+    let paths=iconLookup[`${x}_${y}`]||'';
 
-    // Assigned icon failed → try other icons from same category (first one that loaded)
+    // Fallback: try other icons from same category
     if(!paths && entry.category){
-      const catEntry = ICON_MAP.find(e=>e.cat===entry.category);
+      const catEntry=ICON_MAP.find(e=>e.cat===entry.category);
       if(catEntry){
         for(const ico of catEntry.icons){
-          const k=`${ico.l}:${ico.n}`;
-          if(iconCache[k]){ paths=iconCache[k]; break; }
+          const k=`${ico.x}_${ico.y}`;
+          if(iconLookup[k]){ paths=iconLookup[k]; break; }
         }
       }
     }
+
+    if(paths){
+      return `<g transform="${iconTransform(entry.shape)}" class="${icClass}">${paths}</g>`;
+    }
   }
 
-  if(!entry.useText && paths){
-    return `<g transform="${iconTransform(entry.shape)}" class="${icClass}">${paths}</g>`;
-  } else {
-    const fs=entry.abbr.length===1?15:entry.abbr.length===2?11:8.5;
-    return `<text x="16" y="16" dominant-baseline="central" text-anchor="middle" font-weight="700" font-family="system-ui,sans-serif" font-size="${fs}" class="${lbClass}">${entry.abbr}</text>`;
-  }
+  const fs=entry.abbr.length===1?15:entry.abbr.length===2?11:8.5;
+  return `<text x="16" y="16" dominant-baseline="central" text-anchor="middle" font-weight="700" font-family="system-ui,sans-serif" font-size="${fs}" class="${lbClass}">${entry.abbr}</text>`;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -636,7 +649,7 @@ async function computeEntry(domain, abbr, offset) {
   // No keyword matched → text mode (Abbr), no icon
   if(!ce){
     return {
-      abbr, category:'text', icon:null, lib:null, useText:true,
+      abbr, category:'text', iconCoords:null, useText:true,
       palette, palette_idx, shape, gradient,
       combo_key:`${palette}-${shape}-${gradient}-text`,
     };
@@ -646,9 +659,9 @@ async function computeEntry(domain, abbr, offset) {
   const ico     = ce.icons[iconIdx];
 
   return {
-    abbr, category:ce.cat, icon:ico.n, lib:ico.l, useText:false,
+    abbr, category:ce.cat, iconCoords:[ico.x,ico.y], useText:false,
     palette, palette_idx, shape, gradient,
-    combo_key:`${palette}-${shape}-${gradient}-${ico.n}`,
+    combo_key:`${palette}-${shape}-${gradient}-${ico.x}_${ico.y}`,
   };
 }
 
@@ -931,7 +944,7 @@ document.getElementById('btn-zip').addEventListener('click',downloadZip);
 // ═══════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════
-loadAllIcons();
+loadIconsSprite();
 </script>
 </body>
 </html>
