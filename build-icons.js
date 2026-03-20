@@ -18,6 +18,7 @@ const PACKAGES = [
   '@tabler/icons',
   '@phosphor-icons/core',
   'bootstrap-icons',
+  'remixicon',
 ];
 
 console.log('📦 Installing icon packages…');
@@ -67,6 +68,15 @@ function svgPath(ico) {
     }
     case 'bootstrap':
       return path.join(NM, 'bootstrap-icons', 'icons', `${name}.svg`);
+    case 'remix': {
+      // Icons organised in category subdirs — scan to find the file
+      const remixBase = path.join(NM, 'remixicon', 'icons');
+      for (const cat of fs.readdirSync(remixBase)) {
+        const p = path.join(remixBase, cat, `${name}.svg`);
+        if (fs.existsSync(p)) return p;
+      }
+      return null;
+    }
     default:
       return null;
   }
@@ -118,8 +128,8 @@ for (const entry of ICON_MAP) {
     }
 
     const svgText  = fs.readFileSync(filePath, 'utf8');
-    const isStroke = ico.lib === 'lucide' || ico.lib === 'tabler';
-    const srcSize  = ico.lib === 'phosphor' ? 256 : ico.lib === 'bootstrap' ? 16 : 24;
+    const isStroke = ico.lib === 'lucide' || ico.lib === 'tabler'; // remix is fill
+    const srcSize  = ico.lib === 'phosphor' ? 256 : ico.lib === 'bootstrap' ? 16 : 24; // remix = 24
     const result   = extractPaths(svgText, isStroke, srcSize);
 
     if (!result) {
