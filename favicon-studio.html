@@ -229,10 +229,19 @@ input[type="text"]:focus{outline:none;border-color:var(--accent)}
   appearance:auto;-webkit-appearance:auto;
 }
 #il-add-lib{width:100px}#il-add-weight{width:90px}
-#il-add-name{flex:1;min-width:130px}
 #il-add-btn{padding:7px 14px;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;white-space:nowrap}
 #il-add-btn:hover{background:var(--accent-h)}
 #il-add-status{font-size:11px;margin-top:8px;min-height:16px}
+#il-name-wrap{position:relative;flex:1;min-width:130px}
+#il-name-wrap input{width:100%;box-sizing:border-box}
+#il-suggestions{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--card);border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.18);max-height:220px;overflow-y:auto;z-index:10001;display:none}
+#il-suggestions.open{display:block}
+.il-sug-item{display:flex;align-items:center;gap:8px;padding:5px 10px;cursor:pointer;font-size:12px}
+.il-sug-item:hover{background:var(--chip)}
+.il-sug-svg{width:24px;height:24px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--panel);border-radius:4px;overflow:hidden}
+.il-sug-svg svg{width:24px;height:24px}
+.il-sug-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.il-sug-lib{font-size:10px;color:var(--text2);flex-shrink:0;margin-left:2px}
 #il-footer{
   border-top:1px solid var(--border);padding:10px 18px;background:var(--panel);
   display:flex;align-items:center;gap:12px;flex-shrink:0;
@@ -5310,6 +5319,64 @@ async function ilAddIcon() {
   ilRenderSidebar();
 }
 
+function ilCloseSug() {
+  const box = document.getElementById('il-suggestions');
+  if (box) { box.classList.remove('open'); box.innerHTML = ''; }
+}
+
+function ilSuggest() {
+  const input = document.getElementById('il-add-name');
+  const q = input.value.trim().toLowerCase();
+  const box = document.getElementById('il-suggestions');
+  if (!q) { ilCloseSug(); return; }
+
+  const lib = document.getElementById('il-add-lib').value;
+  const all = Object.keys(ilIconByLib);
+
+  const matches = all.filter(k => {
+    const parts = k.split(':');
+    return parts[0] === lib && parts[1].toLowerCase().includes(q);
+  });
+
+  matches.sort((a, b) => {
+    const an = a.split(':')[1].toLowerCase();
+    const bn = b.split(':')[1].toLowerCase();
+    const as = an.startsWith(q) ? 0 : 1;
+    const bs = bn.startsWith(q) ? 0 : 1;
+    if (as !== bs) return as - bs;
+    return an.localeCompare(bn);
+  });
+
+  const top = matches.slice(0, 20);
+  if (!top.length) { ilCloseSug(); return; }
+
+  box.innerHTML = top.map(k => {
+    const parts = k.split(':');
+    const name = parts[1];
+    const weight = parts[2] || '';
+    const sym = ilIconByLib[k];
+    const tf = iconRenderTransform(sym.srcSize);
+    const st = sym.stroke
+      ? 'fill:none;stroke:#2B3A55;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round'
+      : 'fill:#2B3A55;stroke:none';
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24"><rect width="32" height="32" fill="#E8ECF5"/><g transform="${tf}" style="${st}">${sym.paths}</g></svg>`;
+    const safeName = name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const safeWeight = weight.replace(/'/g,"\\'");
+    return `<div class="il-sug-item" onmousedown="ilPickSug('${safeName}','${safeWeight}')">
+      <div class="il-sug-svg">${svg}</div>
+      <span class="il-sug-name">${name}</span>
+      ${weight ? `<span class="il-sug-lib">${weight}</span>` : ''}
+    </div>`;
+  }).join('');
+  box.classList.add('open');
+}
+
+function ilPickSug(name, weight) {
+  document.getElementById('il-add-name').value = name;
+  if (weight) document.getElementById('il-add-weight').value = weight;
+  ilCloseSug();
+}
+
 function ilDownload() {
   const lines = ICON_MAP.map(entry => {
     const icons = entry.icons.map(ico => {
@@ -5348,14 +5415,17 @@ function ilDownload() {
         <div id="il-add">
           <div id="il-add-title">Додати іконку в цю категорію</div>
           <div id="il-add-row">
-            <select id="il-add-lib">
+            <select id="il-add-lib" onchange="ilSuggest()">
               <option value="lucide">Lucide</option>
               <option value="tabler">Tabler</option>
               <option value="phosphor">Phosphor</option>
               <option value="bootstrap">Bootstrap</option>
               <option value="remix">Remix</option>
             </select>
-            <input id="il-add-name" placeholder="icon-name" />
+            <div id="il-name-wrap">
+              <input id="il-add-name" placeholder="icon-name" oninput="ilSuggest()" onblur="setTimeout(ilCloseSug,150)" />
+              <div id="il-suggestions"></div>
+            </div>
             <select id="il-add-weight">
               <option value="">вага</option>
               <option value="regular">regular</option>
