@@ -4919,7 +4919,8 @@ function parseDomains(text) {
     domain=domain.toLowerCase().replace(/^https?:\/\//,'').replace(/\/$/, '').trim();
     if(!domain||seen.has(domain)) continue;
     seen.add(domain);
-    out.push({ domain, abbr: extractAbbr(domain, abbr) });
+    const networkName = domIdx !== -1 ? (parts[0] || '').trim() : '';
+    out.push({ domain, abbr: extractAbbr(domain, abbr), networkName });
   }
   return out;
 }
@@ -4927,9 +4928,18 @@ function parseDomains(text) {
 // ═══════════════════════════════════════════════════════════
 // GENERATION
 // ═══════════════════════════════════════════════════════════
-async function computeEntry(domain, abbr, offset) {
+async function computeEntry(domain, abbr, offset, networkName='') {
   const h=await sha256(domain);
-  const ce=findCatEntry(domain);
+  let ce=findCatEntry(domain);
+
+  // Fallback: if no keyword match, try networkName column
+  if(!ce && networkName){
+    const nn=networkName.toLowerCase();
+    const hotelNetworks=['city emd','citybased','gluing','support network','pmd linkbuilding'];
+    if(hotelNetworks.some(s=>nn.includes(s))){
+      ce=ICON_MAP.find(e=>e.category==='hotel');
+    }
+  }
 
   // Palette with soft bias
   let palIdx=(h[0]^h[6]^h[12]^h[18]+offset)%5;
@@ -4968,7 +4978,7 @@ async function generateAll(domainList) {
   const localUsed=new Set(usedCombos);
 
   for(let i=0;i<domainList.length;i++){
-    const {domain,abbr}=domainList[i];
+    const {domain,abbr,networkName=''}=domainList[i];
 
     if(existingMFest[domain]){
       // Reuse from loaded manifest
@@ -4982,7 +4992,7 @@ async function generateAll(domainList) {
     } else {
       let entry, offset=0;
       while(true){
-        entry=await computeEntry(domain,abbr,offset);
+        entry=await computeEntry(domain,abbr,offset,networkName);
         if(!localUsed.has(entry.combo_key)) break;
         offset++; stats.collisions++;
         if(offset>120) break;
