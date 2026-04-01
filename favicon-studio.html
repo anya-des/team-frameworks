@@ -5373,19 +5373,39 @@ function ilRunSearch() {
     return;
   }
 
-  // Search _libNameToSym + _cdnSymCache, deduplicate by lib:name
+  const weight = document.getElementById('il-add-weight').value;
+
+  // Build results from ICON_MAP (real icon names) using iconSymbols for the actual SVG data
   const seen = new Set();
   const results = [];
-  for (const src of [_libNameToSym, _cdnSymCache]) {
-    for (const lk of Object.keys(src)) {
-      const parts = lk.split(':');
-      const lib = parts[0], name = parts[1];
-      if (!name.toLowerCase().includes(q)) continue;
-      const dedup = `${lib}:${name}`;
-      if (seen.has(dedup)) continue;
+
+  for (const entry of ICON_MAP) {
+    entry.icons.forEach((ico, idx) => {
+      if (!ico.lib) return;
+      if (!ico.name.toLowerCase().includes(q)) return;
+      // weight filter: only apply when phosphor and weight is set
+      if (weight && ico.lib === 'phosphor' && ico.weight && ico.weight !== weight) return;
+      const dedup = `${ico.lib}:${ico.name}`;
+      if (seen.has(dedup)) return;
       seen.add(dedup);
-      results.push({lib, name, sym: src[lk]});
-    }
+      // prefer iconSymbols (current state), fall back to _libNameToSym / _cdnSymCache
+      const catKey = `${entry.category}_${idx}`;
+      const lk = ico.weight ? `${ico.lib}:${ico.name}:${ico.weight}` : `${ico.lib}:${ico.name}`;
+      const sym = iconSymbols[catKey] || _libNameToSym[lk] || _cdnSymCache[lk] || null;
+      if (!sym) return;
+      results.push({lib: ico.lib, name: ico.name, weight: ico.weight || '', sym});
+    });
+  }
+
+  // Also include CDN-cached icons not in ICON_MAP
+  for (const lk of Object.keys(_cdnSymCache)) {
+    const parts = lk.split(':');
+    const lib = parts[0], name = parts[1];
+    if (!name.toLowerCase().includes(q)) continue;
+    const dedup = `${lib}:${name}`;
+    if (seen.has(dedup)) continue;
+    seen.add(dedup);
+    results.push({lib, name, weight: parts[2] || '', sym: _cdnSymCache[lk]});
   }
 
   results.sort((a, b) => {
@@ -5398,34 +5418,29 @@ function ilRunSearch() {
   status.textContent = results.length ? `${results.length} результатів` : 'Нічого не знайдено';
   if (!results.length) { res.classList.remove('show'); res.innerHTML = ''; return; }
 
-  const weight = document.getElementById('il-add-weight').value;
   const top = results.slice(0, 80);
-
-  res.innerHTML = top.map(({lib, name, sym}) => {
-    let displaySym = sym;
-    if (lib === 'phosphor' && weight) {
-      const wlk = `${lib}:${name}:${weight}`;
-      displaySym = _libNameToSym[wlk] || _cdnSymCache[wlk] || sym;
-    }
-    const tf = iconRenderTransform(displaySym.srcSize);
-    const st = displaySym.stroke
+  res.innerHTML = top.map(({lib, name, weight: w, sym}) => {
+    const tf = iconRenderTransform(sym.srcSize);
+    const st = sym.stroke
       ? 'fill:none;stroke:#2B3A55;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round'
       : 'fill:#2B3A55;stroke:none';
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="40" height="40"><rect width="32" height="32" rx="7" fill="#E8ECF5"/><g transform="${tf}" style="${st}">${displaySym.paths}</g></svg>`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="40" height="40"><rect width="32" height="32" rx="7" fill="#E8ECF5"/><g transform="${tf}" style="${st}">${sym.paths}</g></svg>`;
     const safeName = name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
     const safeLib  = lib.replace(/'/g,"\\'");
+    const safeW    = w.replace(/'/g,"\\'");
     const abbr = _IL_LIB_ABBR[lib] || lib.slice(0,2);
-    return `<div class="il-res-card" onclick="ilAddFromSearch('${safeLib}','${safeName}')"><div>${svg}</div><div class="il-res-name">${name}</div><span class="il-res-lib">${abbr}</span></div>`;
+    return `<div class="il-res-card" onclick="ilAddFromSearch('${safeLib}','${safeName}','${safeW}')"><div>${svg}</div><div class="il-res-name">${name}</div><span class="il-res-lib">${abbr}</span></div>`;
   }).join('');
   res.classList.add('show');
 }
 
-function ilAddFromSearch(lib, name) {
+function ilAddFromSearch(lib, name, weight) {
   const entry = ICON_MAP.find(e => e.category === ilCurCat);
   if (!entry) return;
-  const weight = (lib === 'phosphor')
-    ? (document.getElementById('il-add-weight').value || 'regular')
-    : '';
+  // weight comes from the card (already resolved); for phosphor fall back to select
+  if (!weight && lib === 'phosphor') {
+    weight = document.getElementById('il-add-weight').value || 'regular';
+  }
   const lk = weight ? `${lib}:${name}:${weight}` : `${lib}:${name}`;
   const sym = _libNameToSym[lk] || _cdnSymCache[lk] || null;
   if (!sym || !sym.paths || !sym.paths.trim()) {
