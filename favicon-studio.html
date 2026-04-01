@@ -5373,46 +5373,33 @@ function ilRunSearch() {
     return;
   }
 
-  const weight = document.getElementById('il-add-weight').value;
+  const weightFilter = document.getElementById('il-add-weight').value;
 
-  // Build results from ICON_MAP (real icon names) using iconSymbols for the actual SVG data
+  // Search ALL available icons from _libNameToSym (469 pre-built) + _cdnSymCache
+  // Keys are "lib:name" or "lib:name:weight" — search by name part
   const seen = new Set();
   const results = [];
 
-  for (const entry of ICON_MAP) {
-    entry.icons.forEach((ico, idx) => {
-      if (!ico.lib) return;
-      if (!ico.name.toLowerCase().includes(q)) return;
-      // weight filter: only apply when phosphor and weight is set
-      if (weight && ico.lib === 'phosphor' && ico.weight && ico.weight !== weight) return;
-      const dedup = `${ico.lib}:${ico.name}`;
-      if (seen.has(dedup)) return;
+  for (const src of [_libNameToSym, _cdnSymCache]) {
+    for (const lk of Object.keys(src)) {
+      const parts = lk.split(':');
+      const lib = parts[0], name = parts[1], w = parts[2] || '';
+      if (!name.toLowerCase().includes(q)) continue;
+      if (weightFilter && w && w !== weightFilter) continue;
+      // deduplicate: for phosphor keep all weight variants; for others dedup by lib:name
+      const dedup = lib === 'phosphor' ? lk : `${lib}:${name}`;
+      if (seen.has(dedup)) continue;
       seen.add(dedup);
-      // prefer iconSymbols (current state), fall back to _libNameToSym / _cdnSymCache
-      const catKey = `${entry.category}_${idx}`;
-      const lk = ico.weight ? `${ico.lib}:${ico.name}:${ico.weight}` : `${ico.lib}:${ico.name}`;
-      const sym = iconSymbols[catKey] || _libNameToSym[lk] || _cdnSymCache[lk] || null;
-      if (!sym) return;
-      results.push({lib: ico.lib, name: ico.name, weight: ico.weight || '', sym});
-    });
-  }
-
-  // Also include CDN-cached icons not in ICON_MAP
-  for (const lk of Object.keys(_cdnSymCache)) {
-    const parts = lk.split(':');
-    const lib = parts[0], name = parts[1];
-    if (!name.toLowerCase().includes(q)) continue;
-    const dedup = `${lib}:${name}`;
-    if (seen.has(dedup)) continue;
-    seen.add(dedup);
-    results.push({lib, name, weight: parts[2] || '', sym: _cdnSymCache[lk]});
+      results.push({lib, name, weight: w, sym: src[lk]});
+    }
   }
 
   results.sort((a, b) => {
     const as = a.name.toLowerCase().startsWith(q) ? 0 : 1;
     const bs = b.name.toLowerCase().startsWith(q) ? 0 : 1;
     if (as !== bs) return as - bs;
-    return a.name.localeCompare(b.name);
+    if (a.name !== b.name) return a.name.localeCompare(b.name);
+    return (a.weight || '').localeCompare(b.weight || '');
   });
 
   status.textContent = results.length ? `${results.length} результатів` : 'Нічого не знайдено';
@@ -5429,7 +5416,8 @@ function ilRunSearch() {
     const safeLib  = lib.replace(/'/g,"\\'");
     const safeW    = w.replace(/'/g,"\\'");
     const abbr = _IL_LIB_ABBR[lib] || lib.slice(0,2);
-    return `<div class="il-res-card" onclick="ilAddFromSearch('${safeLib}','${safeName}','${safeW}')"><div>${svg}</div><div class="il-res-name">${name}</div><span class="il-res-lib">${abbr}</span></div>`;
+    const label = w ? `${name} · ${w}` : name;
+    return `<div class="il-res-card" onclick="ilAddFromSearch('${safeLib}','${safeName}','${safeW}')"><div>${svg}</div><div class="il-res-name">${label}</div><span class="il-res-lib">${abbr}</span></div>`;
   }).join('');
   res.classList.add('show');
 }
