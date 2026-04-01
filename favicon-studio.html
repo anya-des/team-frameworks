@@ -4935,7 +4935,7 @@ async function computeEntry(domain, abbr, offset, networkName='') {
   // Fallback: if no keyword match, try networkName column
   if(!ce && networkName){
     const nn=networkName.toLowerCase();
-    const hotelNetworks=['city emd','citybased','gluing','support network','pmd linkbuilding'];
+    const hotelNetworks=['city emd','citybased','gluing','support network','pmd','gpt pbn','lj first','thematic','new top','mass translation'];
     if(hotelNetworks.some(s=>nn.includes(s))){
       ce=ICON_MAP.find(e=>e.category==='hotel');
     }
