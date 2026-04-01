@@ -222,35 +222,39 @@ input[type="text"]:focus{outline:none;border-color:var(--accent)}
   border-top:1px solid var(--border);padding:14px 18px;background:var(--panel);flex-shrink:0;
 }
 #il-add-title{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px}
-#il-add-row{display:flex;gap:8px;flex-wrap:wrap;align-items:stretch}
-#il-add-row select,#il-add-row input{
+#il-add-row{display:flex;gap:8px;align-items:stretch}
+#il-add-row input{
   height:36px;padding:0 12px;border:1px solid var(--border);border-radius:6px;
-  font-size:12px;background:var(--card);color:var(--text);min-width:0;
-  box-sizing:border-box;overflow:visible;text-overflow:clip;white-space:nowrap;
+  font-size:12px;background:var(--card);color:var(--text);flex:1;min-width:0;
+  box-sizing:border-box;
 }
+#il-add-row input:focus{outline:none;border-color:var(--accent)}
 #il-add-row select{
-  appearance:none;-webkit-appearance:none;
-  padding:8px 32px 8px 12px;
+  height:36px;padding:0 32px 0 12px;border:1px solid var(--border);border-radius:6px;
+  font-size:12px;background:var(--card);color:var(--text);box-sizing:border-box;
+  appearance:none;-webkit-appearance:none;flex-shrink:0;width:130px;cursor:pointer;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%236B6560' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 10px center;
-  background-color:var(--card);
-  min-width:120px;width:auto;cursor:pointer;
+  background-repeat:no-repeat;background-position:right 10px center;background-color:var(--card);
 }
-#il-add-lib{min-width:110px}#il-add-weight{min-width:100px}
-#il-add-btn{height:36px;padding:0 14px;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;white-space:nowrap;box-sizing:border-box}
-#il-add-btn:hover{background:var(--accent-h)}
-#il-add-preview{
-  width:36px;height:36px;flex-shrink:0;border-radius:6px;overflow:hidden;
-  background:var(--chip);display:none;align-items:center;justify-content:center;
+#il-add-status{font-size:11px;margin-top:6px;min-height:14px;color:var(--text2)}
+#il-search-results{
+  display:none;flex-wrap:wrap;gap:7px;margin-top:10px;
+  max-height:220px;overflow-y:auto;padding:2px;
 }
-#il-add-preview.show{display:flex}
-#il-add-preview svg{width:36px;height:36px}
-#il-add-status{font-size:11px;margin-top:8px;min-height:16px}
-#il-name-wrap{position:relative;flex:1;min-width:130px}
-#il-name-wrap input{width:100%;box-sizing:border-box}
-#il-suggestions{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--card);border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.18);max-height:220px;overflow-y:auto;z-index:10001;display:none}
-#il-suggestions.open{display:block}
-.il-sug-item{display:flex;align-items:center;gap:8px;padding:5px 10px;cursor:pointer;font-size:12px}
+#il-search-results.show{display:flex}
+.il-res-card{
+  width:64px;display:flex;flex-direction:column;align-items:center;gap:3px;
+  background:var(--card);border:1px solid var(--border);border-radius:7px;
+  padding:6px 4px 5px;cursor:pointer;transition:border-color .12s,box-shadow .12s;
+  position:relative;
+}
+.il-res-card:hover{border-color:var(--accent);box-shadow:0 0 0 2px rgba(43,92,230,.12)}
+.il-res-card svg{display:block;flex-shrink:0}
+.il-res-name{font-family:var(--mono);font-size:8px;color:var(--text2);text-align:center;
+  word-break:break-all;line-height:1.2;max-width:100%;overflow:hidden;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.il-res-lib{position:absolute;top:3px;right:3px;font-size:7px;font-weight:700;
+  color:var(--text2);background:var(--chip);padding:0 3px;border-radius:2px}
 .il-sug-item:hover{background:var(--chip)}
 .il-sug-svg{width:24px;height:24px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--panel);border-radius:4px;overflow:hidden}
 .il-sug-svg svg{width:24px;height:24px}
@@ -5347,148 +5351,96 @@ function doDelete(entry, catName, iconIdx) {
   ilRenderSidebar();
 }
 
-async function ilAddIcon() {
-  const lib    = document.getElementById('il-add-lib').value;
-  const name   = document.getElementById('il-add-name').value.trim();
-  const rawW   = document.getElementById('il-add-weight').value; // '' | 'regular' | 'bold' | 'light'
+let _ilSearchTimer = null;
+const _IL_LIB_ABBR = {lucide:'Lu',tabler:'Ta',phosphor:'Ph',bootstrap:'BS',remix:'Ri'};
+
+function ilSearchDebounced() {
+  clearTimeout(_ilSearchTimer);
+  _ilSearchTimer = setTimeout(ilRunSearch, 300);
+}
+
+function ilWeightChanged() {
+  ilRunSearch();
+}
+
+function ilRunSearch() {
+  const q = document.getElementById('il-add-name').value.trim().toLowerCase();
+  const res = document.getElementById('il-search-results');
   const status = document.getElementById('il-add-status');
-  if (!name) { status.textContent = '⚠ Введіть назву іконки'; status.style.color='var(--warn)'; return; }
+  if (q.length < 2) {
+    res.classList.remove('show'); res.innerHTML = '';
+    status.textContent = q.length === 1 ? 'Введіть ще один символ…' : '';
+    return;
+  }
 
-  // Normalize weight: phosphor requires explicit weight; lucide/tabler/bootstrap ignore it
-  const needsWeight = lib === 'phosphor';
-  const weight = needsWeight ? (rawW || 'regular') : '';
-
-  // Build lookup key matching ilBuildIndex format
-  const lk = weight ? `${lib}:${name}:${weight}` : `${lib}:${name}`;
-  status.textContent = `Пошук: ${lk}…`; status.style.color='var(--text2)';
-
-  // 1. Check pre-built index (covers all icons already in any category)
-  let sym = ilIconByLib[lk];
-
-  // 2. CDN fallback for icons not pre-built
-  if (!sym) {
-    let url;
-    // Remix icons require a category for CDN — only pre-built icons are supported
-    if (lib === 'remix') {
-      status.textContent = '✗ Remix: лише pre-built іконки. Додайте до ICON_MAP → node build-icons.js';
-      status.style.color = 'var(--warn)'; return;
-    }
-    try {
-      if (lib === 'phosphor') url = CDN_URL.phosphor(name, weight);
-      else if (CDN_URL[lib] && lib !== 'remix') url = CDN_URL[lib](name);
-      else throw new Error('unknown lib');
-    } catch(e) { status.textContent='⚠ Невідома бібліотека'; status.style.color='var(--warn)'; return; }
-
-    status.textContent = `Завантаження з CDN…`; status.style.color='var(--text2)';
-    try {
-      const ac = new AbortController(); setTimeout(()=>ac.abort(), 6000);
-      const r = await fetch(url, {signal:ac.signal});
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      const svgText = await r.text();
-      const isStroke = lib==='lucide' || lib==='tabler';
-      const srcSize  = lib==='phosphor' ? 256 : lib==='bootstrap' ? 16 : 24;
-      sym = wrapCdnIcon(svgText, isStroke, srcSize);
-      if (sym) ilIconByLib[lk] = sym; // cache for reuse
-    } catch(e) {
-      status.textContent = `✗ Не знайдено: ${lk} (${e.message})`; status.style.color='var(--warn)'; return;
+  // Search _libNameToSym + _cdnSymCache, deduplicate by lib:name
+  const seen = new Set();
+  const results = [];
+  for (const src of [_libNameToSym, _cdnSymCache]) {
+    for (const lk of Object.keys(src)) {
+      const parts = lk.split(':');
+      const lib = parts[0], name = parts[1];
+      if (!name.toLowerCase().includes(q)) continue;
+      const dedup = `${lib}:${name}`;
+      if (seen.has(dedup)) continue;
+      seen.add(dedup);
+      results.push({lib, name, sym: src[lk]});
     }
   }
 
-  if (!sym || !sym.paths || !sym.paths.trim()) {
-    status.textContent = `✗ Порожня іконка: ${lk}`; status.style.color='var(--warn)'; return;
-  }
+  results.sort((a, b) => {
+    const as = a.name.toLowerCase().startsWith(q) ? 0 : 1;
+    const bs = b.name.toLowerCase().startsWith(q) ? 0 : 1;
+    if (as !== bs) return as - bs;
+    return a.name.localeCompare(b.name);
+  });
 
+  status.textContent = results.length ? `${results.length} результатів` : 'Нічого не знайдено';
+  if (!results.length) { res.classList.remove('show'); res.innerHTML = ''; return; }
+
+  const weight = document.getElementById('il-add-weight').value;
+  const top = results.slice(0, 80);
+
+  res.innerHTML = top.map(({lib, name, sym}) => {
+    let displaySym = sym;
+    if (lib === 'phosphor' && weight) {
+      const wlk = `${lib}:${name}:${weight}`;
+      displaySym = _libNameToSym[wlk] || _cdnSymCache[wlk] || sym;
+    }
+    const tf = iconRenderTransform(displaySym.srcSize);
+    const st = displaySym.stroke
+      ? 'fill:none;stroke:#2B3A55;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round'
+      : 'fill:#2B3A55;stroke:none';
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="40" height="40"><rect width="32" height="32" rx="7" fill="#E8ECF5"/><g transform="${tf}" style="${st}">${displaySym.paths}</g></svg>`;
+    const safeName = name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const safeLib  = lib.replace(/'/g,"\\'");
+    const abbr = _IL_LIB_ABBR[lib] || lib.slice(0,2);
+    return `<div class="il-res-card" onclick="ilAddFromSearch('${safeLib}','${safeName}')"><div>${svg}</div><div class="il-res-name">${name}</div><span class="il-res-lib">${abbr}</span></div>`;
+  }).join('');
+  res.classList.add('show');
+}
+
+function ilAddFromSearch(lib, name) {
   const entry = ICON_MAP.find(e => e.category === ilCurCat);
   if (!entry) return;
+  const weight = (lib === 'phosphor')
+    ? (document.getElementById('il-add-weight').value || 'regular')
+    : '';
+  const lk = weight ? `${lib}:${name}:${weight}` : `${lib}:${name}`;
+  const sym = _libNameToSym[lk] || _cdnSymCache[lk] || null;
+  if (!sym || !sym.paths || !sym.paths.trim()) {
+    document.getElementById('il-add-status').textContent = `\u2717 Sym не знайдено: ${lk}`;
+    return;
+  }
   const newIdx = entry.icons.length;
   const icoObj = weight ? {name, lib, weight} : {name, lib};
   entry.icons.push(icoObj);
   iconSymbols[`${ilCurCat}_${newIdx}`] = sym;
-  if (!_libNameToSym[lk]) _cdnSymCache[lk] = sym; // cache CDN-fetched syms for persistence
+  if (!_libNameToSym[lk]) _cdnSymCache[lk] = sym;
   saveLibrary();
-
-  status.textContent = `✓ ${lk} додано до "${ilCurCat}"`; status.style.color='var(--green)';
-  document.getElementById('il-add-name').value = '';
+  document.getElementById('il-add-status').textContent = `\u2713 ${lk} додано до "${ilCurCat}"`;
   ilRenderCategory(ilCurCat);
   ilRenderSidebar();
-}
-
-function ilCloseSug() {
-  const box = document.getElementById('il-suggestions');
-  if (box) { box.classList.remove('open'); box.innerHTML = ''; }
-}
-
-function updateAddPreview(lk) {
-  const el = document.getElementById('il-add-preview');
-  if (!lk) { el.classList.remove('show'); el.innerHTML = ''; return; }
-  const sym = _libNameToSym[lk] || _cdnSymCache[lk] || ilIconByLib[lk] || null;
-  if (!sym || !sym.paths || !sym.paths.trim()) { el.classList.remove('show'); el.innerHTML = ''; return; }
-  const tf = iconRenderTransform(sym.srcSize);
-  const st = sym.stroke
-    ? 'fill:none;stroke:#2B3A55;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round'
-    : 'fill:#2B3A55;stroke:none';
-  el.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="36" height="36">
-    <rect width="32" height="32" rx="7" fill="#E8ECF5"/>
-    <g transform="${tf}" style="${st}">${sym.paths}</g>
-  </svg>`;
-  el.classList.add('show');
-}
-
-function ilSuggest() {
-  const input = document.getElementById('il-add-name');
-  const q = input.value.trim().toLowerCase();
-  const box = document.getElementById('il-suggestions');
-  if (!q) { ilCloseSug(); updateAddPreview(null); return; }
-
-  const lib = document.getElementById('il-add-lib').value;
-  const all = Object.keys(ilIconByLib);
-
-  const matches = all.filter(k => {
-    const parts = k.split(':');
-    return parts[0] === lib && parts[1].toLowerCase().includes(q);
-  });
-
-  matches.sort((a, b) => {
-    const an = a.split(':')[1].toLowerCase();
-    const bn = b.split(':')[1].toLowerCase();
-    const as = an.startsWith(q) ? 0 : 1;
-    const bs = bn.startsWith(q) ? 0 : 1;
-    if (as !== bs) return as - bs;
-    return an.localeCompare(bn);
-  });
-
-  const top = matches.slice(0, 20);
-  if (!top.length) { ilCloseSug(); updateAddPreview(null); return; }
-
-  box.innerHTML = top.map(k => {
-    const parts = k.split(':');
-    const name = parts[1];
-    const weight = parts[2] || '';
-    const sym = ilIconByLib[k];
-    const tf = iconRenderTransform(sym.srcSize);
-    const st = sym.stroke
-      ? 'fill:none;stroke:#2B3A55;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round'
-      : 'fill:#2B3A55;stroke:none';
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24"><rect width="32" height="32" fill="#E8ECF5"/><g transform="${tf}" style="${st}">${sym.paths}</g></svg>`;
-    const safeName = name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    const safeWeight = weight.replace(/'/g,"\\'");
-    return `<div class="il-sug-item" onmousedown="ilPickSug('${safeName}','${safeWeight}')">
-      <div class="il-sug-svg">${svg}</div>
-      <span class="il-sug-name">${name}</span>
-      ${weight ? `<span class="il-sug-lib">${weight}</span>` : ''}
-    </div>`;
-  }).join('');
-  box.classList.add('open');
-  updateAddPreview(top[0]);
-}
-
-function ilPickSug(name, weight) {
-  document.getElementById('il-add-name').value = name;
-  if (weight) document.getElementById('il-add-weight').value = weight;
-  const lib = document.getElementById('il-add-lib').value;
-  const lk = weight ? `${lib}:${name}:${weight}` : `${lib}:${name}`;
-  updateAddPreview(lk);
-  ilCloseSug();
 }
 
 function ilDownload() {
@@ -5593,26 +5545,15 @@ function renderGenReport() {
         <div id="il-add">
           <div id="il-add-title">Додати іконку в цю категорію</div>
           <div id="il-add-row">
-            <select id="il-add-lib" onchange="ilSuggest()">
-              <option value="lucide">Lucide</option>
-              <option value="tabler">Tabler</option>
-              <option value="phosphor">Phosphor</option>
-              <option value="bootstrap">Bootstrap</option>
-              <option value="remix">Remix</option>
-            </select>
-            <div id="il-name-wrap">
-              <input id="il-add-name" placeholder="icon-name" oninput="ilSuggest()" onblur="setTimeout(ilCloseSug,150)" />
-              <div id="il-suggestions"></div>
-            </div>
-            <select id="il-add-weight">
-              <option value="">вага</option>
+            <input id="il-add-name" placeholder="Пошук: flower, sun, home…" oninput="ilSearchDebounced()" autocomplete="off" />
+            <select id="il-add-weight" onchange="ilWeightChanged()">
+              <option value="">будь-яка вага</option>
               <option value="regular">regular</option>
               <option value="bold">bold</option>
               <option value="light">light</option>
             </select>
-            <div id="il-add-preview"></div>
-            <button id="il-add-btn" onclick="ilAddIcon()">+ Додати</button>
           </div>
+          <div id="il-search-results"></div>
           <div id="il-add-status"></div>
         </div>
       </div>
