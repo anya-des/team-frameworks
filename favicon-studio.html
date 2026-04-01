@@ -4837,7 +4837,7 @@ function resolveIcon(iconKey, category) {
     const catEntry = ICON_MAP.find(e => e.category === category);
     if (catEntry) {
       for (let i = 0; i < catEntry.icons.length; i++) {
-        const k = `${catEntry.cat}_${i}`;
+        const k = `${catEntry.category}_${i}`;
         if (iconSymbols[k]) { sym = iconSymbols[k]; break; }
       }
     }
