@@ -4868,7 +4868,15 @@ function parseDomains(text) {
   for(const line of lines){
     const parts=line.trim().split(/\t/);
     let domain='', abbr='';
-    if(parts.length>=4){
+    // Auto-detect domain column: find part containing a known TLD
+    const tldRe=/\.(com|net|org|info|biz|de|fr|es|it|nl|pl|cz|sk|hu|ro|at|ch|be|se|no|dk|fi|ru|ua|io|co)(\/?.*)?$/i;
+    const domIdx=parts.findIndex(p=>tldRe.test(p.trim()));
+    if(domIdx!==-1){
+      domain=parts[domIdx].trim();
+      // abbr: first 2-4 char ALL-CAPS part that isn't the domain column
+      const abbrPart=parts.find((p,i)=>i!==domIdx&&/^[A-ZА-Я]{2,4}$/.test(p.trim()));
+      if(abbrPart) abbr=abbrPart.trim();
+    } else if(parts.length>=4){
       domain=parts[1].trim(); abbr=parts[3].trim();
     } else if(parts.length===2){
       domain=parts[0].trim(); abbr=parts[1].trim();
