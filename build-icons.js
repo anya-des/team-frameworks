@@ -29,19 +29,19 @@ console.log('');
 console.log('📖 Reading ICON_MAP from favicon-studio.html…');
 const html = fs.readFileSync(HTML_FILE, 'utf8');
 
-const mapStart = html.indexOf('const ICON_MAP = [');
-if (mapStart === -1) throw new Error('ICON_MAP not found in HTML');
+const mapStart = html.indexOf('let ICON_MAP = [');
+if (mapStart === -1) throw new Error('ICON_MAP not found in HTML (expected `let ICON_MAP = [`');
 
 // Walk brackets to find the end of the array literal
 let depth = 0, mapEnd = -1;
-for (let i = mapStart + 'const ICON_MAP = '.length; i < html.length; i++) {
+for (let i = mapStart + 'let ICON_MAP = '.length; i < html.length; i++) {
   if (html[i] === '[') depth++;
   else if (html[i] === ']') { depth--; if (depth === 0) { mapEnd = i + 1; break; } }
 }
 if (mapEnd === -1) throw new Error('Could not find end of ICON_MAP');
 
 // Safely eval the array literal (our own code, no user input)
-const iconMapSrc = html.slice(mapStart + 'const ICON_MAP = '.length, mapEnd);
+const iconMapSrc = html.slice(mapStart + 'let ICON_MAP = '.length, mapEnd);
 const ICON_MAP = eval(iconMapSrc); // eslint-disable-line no-eval
 console.log(`  Found ${ICON_MAP.length} categories\n`);
 
@@ -169,7 +169,7 @@ const injection =
   `const ICON_PATHS = ${iconPathsJson};\n` +
   `// ── end ICON_PATHS ──\n`;
 
-newHtml = newHtml.replace('const ICON_MAP = [', injection + 'const ICON_MAP = [');
+newHtml = newHtml.replace('let ICON_MAP = [', injection + 'let ICON_MAP = [');
 
 // ─── 8. Replace loadIconsSprite with fast static version ────────────────────
 const OLD_LOADER_START = 'async function loadIconsSprite()';
@@ -228,12 +228,14 @@ async function loadIconsSprite() {
     for (const entry of ICON_MAP) {
       entry.icons.forEach((ico, idx) => {
         if (!ico.lib) return;
-        const key = \`\${entry.category}_\${idx}\`;
-        if (ICON_PATHS[key]) {
-          iconSymbols[key] = ICON_PATHS[key];
+        const newKey = \`\${entry.category}_\${idx}\`;
+        const lk = ico.weight ? \`\${ico.lib}:\${ico.name}:\${ico.weight}\` : \`\${ico.lib}:\${ico.name}\`;
+        const sym = _libNameToSym[lk] || _cdnSymCache[lk] || null;
+        if (sym) {
+          iconSymbols[newKey] = sym;
           built++;
         } else {
-          missing.push(\`\${ico.lib}:\${ico.name}\`);
+          missing.push(lk);
         }
       });
     }
