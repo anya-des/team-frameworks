@@ -222,16 +222,22 @@ input[type="text"]:focus{outline:none;border-color:var(--accent)}
   border-top:1px solid var(--border);padding:14px 18px;background:var(--panel);flex-shrink:0;
 }
 #il-add-title{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px}
-#il-add-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#il-add-row{display:flex;gap:8px;flex-wrap:wrap;align-items:stretch}
 #il-add-row select,#il-add-row input{
-  padding:8px 12px;border:1px solid var(--border);border-radius:6px;
+  height:36px;padding:0 12px;border:1px solid var(--border);border-radius:6px;
   font-size:12px;background:var(--card);color:var(--text);min-width:0;
-  appearance:auto;-webkit-appearance:auto;
+  box-sizing:border-box;appearance:auto;-webkit-appearance:auto;
 }
-#il-add-row select{padding:8px 32px 8px 12px}
+#il-add-row select{padding:0 36px 0 12px}
 #il-add-lib{width:100px}#il-add-weight{width:90px}
-#il-add-btn{padding:7px 14px;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;white-space:nowrap}
+#il-add-btn{height:36px;padding:0 14px;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;white-space:nowrap;box-sizing:border-box}
 #il-add-btn:hover{background:var(--accent-h)}
+#il-add-preview{
+  width:36px;height:36px;flex-shrink:0;border-radius:6px;overflow:hidden;
+  background:var(--chip);display:none;align-items:center;justify-content:center;
+}
+#il-add-preview.show{display:flex}
+#il-add-preview svg{width:36px;height:36px}
 #il-add-status{font-size:11px;margin-top:8px;min-height:16px}
 #il-name-wrap{position:relative;flex:1;min-width:130px}
 #il-name-wrap input{width:100%;box-sizing:border-box}
@@ -5405,11 +5411,27 @@ function ilCloseSug() {
   if (box) { box.classList.remove('open'); box.innerHTML = ''; }
 }
 
+function updateAddPreview(lk) {
+  const el = document.getElementById('il-add-preview');
+  if (!lk) { el.classList.remove('show'); el.innerHTML = ''; return; }
+  const sym = _libNameToSym[lk] || _cdnSymCache[lk] || ilIconByLib[lk] || null;
+  if (!sym || !sym.paths || !sym.paths.trim()) { el.classList.remove('show'); el.innerHTML = ''; return; }
+  const tf = iconRenderTransform(sym.srcSize);
+  const st = sym.stroke
+    ? 'fill:none;stroke:#2B3A55;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round'
+    : 'fill:#2B3A55;stroke:none';
+  el.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="36" height="36">
+    <rect width="32" height="32" rx="7" fill="#E8ECF5"/>
+    <g transform="${tf}" style="${st}">${sym.paths}</g>
+  </svg>`;
+  el.classList.add('show');
+}
+
 function ilSuggest() {
   const input = document.getElementById('il-add-name');
   const q = input.value.trim().toLowerCase();
   const box = document.getElementById('il-suggestions');
-  if (!q) { ilCloseSug(); return; }
+  if (!q) { ilCloseSug(); updateAddPreview(null); return; }
 
   const lib = document.getElementById('il-add-lib').value;
   const all = Object.keys(ilIconByLib);
@@ -5429,7 +5451,7 @@ function ilSuggest() {
   });
 
   const top = matches.slice(0, 20);
-  if (!top.length) { ilCloseSug(); return; }
+  if (!top.length) { ilCloseSug(); updateAddPreview(null); return; }
 
   box.innerHTML = top.map(k => {
     const parts = k.split(':');
@@ -5450,11 +5472,15 @@ function ilSuggest() {
     </div>`;
   }).join('');
   box.classList.add('open');
+  updateAddPreview(top[0]);
 }
 
 function ilPickSug(name, weight) {
   document.getElementById('il-add-name').value = name;
   if (weight) document.getElementById('il-add-weight').value = weight;
+  const lib = document.getElementById('il-add-lib').value;
+  const lk = weight ? `${lib}:${name}:${weight}` : `${lib}:${name}`;
+  updateAddPreview(lk);
   ilCloseSug();
 }
 
@@ -5577,6 +5603,7 @@ function renderGenReport() {
               <option value="bold">bold</option>
               <option value="light">light</option>
             </select>
+            <div id="il-add-preview"></div>
             <button id="il-add-btn" onclick="ilAddIcon()">+ Додати</button>
           </div>
           <div id="il-add-status"></div>
