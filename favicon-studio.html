@@ -4902,7 +4902,7 @@ function parseDomains(text) {
     const parts=line.trim().split(/\t/);
     let domain='', abbr='';
     // Auto-detect domain column: find part containing a known TLD
-    const tldRe=/\.(com|net|org|info|biz|de|fr|es|it|nl|pl|cz|sk|hu|ro|at|ch|be|se|no|dk|fi|ru|ua|io|co)(\/?.*)?$/i;
+    const tldRe=/\.(com|net|org|info|biz|de|fr|es|it|nl|pl|cz|sk|hu|ro|at|ch|be|se|no|dk|fi|ru|ua|io|co|guru|world|today|me|space|one|club|pro|guide|camp|ws|eu|uk)(\/?.*)?$/i;
     const domIdx=parts.findIndex(p=>tldRe.test(p.trim()));
     if(domIdx!==-1){
       domain=parts[domIdx].trim();
