@@ -4889,7 +4889,7 @@ function buildContent(entry, suffix, ic, forDom) {
   }
 
   const fs=entry.abbr.length===1?15:entry.abbr.length===2?11:8.5;
-  return `<text x="16" y="16" dominant-baseline="central" text-anchor="middle" font-weight="700" font-family="system-ui,sans-serif" font-size="${fs}" class="${lbClass}">${entry.abbr}</text>`;
+  return `<text x="16" y="50%" dominant-baseline="middle" text-anchor="middle" font-weight="700" font-family="system-ui,sans-serif" font-size="${fs}" class="${lbClass}">${entry.abbr}</text>`;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -5130,13 +5130,7 @@ async function downloadZip() {
   const date=new Date().toISOString().slice(0,10);
   const count=Object.keys(generated).length;
   for(const [domain,entry] of Object.entries(generated)){
-    const folder=zip.folder(domain);
-    folder.file('favicon.svg',entry.svg||'');
-    folder.file('markup.html',
-      `<link rel="icon" href="/favicon.svg" type="image/svg+xml">\n`+
-      `<link rel="icon" href="/favicon.ico" sizes="32x32">\n`+
-      `<link rel="apple-touch-icon" href="/apple-touch-icon.png">`
-    );
+    zip.file(`${domain}.svg`,entry.svg||'');
   }
   const blob=await zip.generateAsync({type:'blob'});
   const url=URL.createObjectURL(blob);
