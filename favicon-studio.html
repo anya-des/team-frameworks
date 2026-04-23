@@ -5135,18 +5135,13 @@ async function downloadZip() {
     const canvas=document.createElement('canvas');
     canvas.width=64; canvas.height=64;
     const ctx=canvas.getContext('2d');
-    ctx.clearRect(0,0,64,64);
-    ctx.globalCompositeOperation='copy';
-    const img=new Image();
     const svg=svgStr.replace(/^<svg /,'<svg style="background-color:transparent" ');
-    const blobUrl=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));
-    img.onload=()=>{
-      ctx.drawImage(img,0,0,64,64);
-      URL.revokeObjectURL(blobUrl);
+    const blob=new Blob([svg],{type:'image/svg+xml'});
+    createImageBitmap(blob).then(bitmap=>{
+      ctx.clearRect(0,0,64,64);
+      ctx.drawImage(bitmap,0,0,64,64);
       canvas.toBlob(resolve,'image/png');
-    };
-    img.onerror=()=>resolve(new Blob([''],{type:'image/png'}));
-    img.src=blobUrl;
+    }).catch(()=>resolve(new Blob([''],{type:'image/png'})));
   });
 
   const entries=Object.entries(generated);
