@@ -5135,8 +5135,9 @@ async function downloadZip() {
     canvas.width=64; canvas.height=64;
     const ctx=canvas.getContext('2d');
     ctx.clearRect(0,0,64,64);
+    ctx.globalCompositeOperation='copy';
     const img=new Image();
-    const svg=svgStr.replace(/^<svg /,'<svg style="background:transparent" ');
+    const svg=svgStr.replace(/^<svg /,'<svg style="background-color:transparent" ');
     const blobUrl=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));
     img.onload=()=>{
       ctx.drawImage(img,0,0,64,64);
