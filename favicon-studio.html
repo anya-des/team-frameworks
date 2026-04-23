@@ -4849,7 +4849,8 @@ function buildManifestSVG(entry) {
   const icStyleM=symM&&symM.stroke?`fill:none;stroke:${ic};stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round`:`fill:${ic};stroke:none`;
   const icStyleDarkM=symM&&symM.stroke?`fill:none!important;stroke:rgba(255,255,255,.92)!important;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round`:`fill:rgba(255,255,255,.92)!important`;
   const style=`<style>.bgm{}.icm{${icStyleM}}.lbm{fill:${ic}}@media(prefers-color-scheme:dark){.bgm{filter:brightness(.62) saturate(.82)}.icm{${icStyleDarkM}}.lbm{fill:rgba(255,255,255,.92)!important}}</style>`;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs>${gradDef}</defs>${style}<g class="bgm" fill="url(#G)">${shapeEl(entry.shape)}</g>${content}</svg>`;
+  const clipDef=`<clipPath id="clip-m">${shapeEl(entry.shape)}</clipPath>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs>${gradDef}${clipDef}</defs>${style}<g class="bgm" fill="url(#G)">${shapeEl(entry.shape)}</g><g clip-path="url(#clip-m)">${content}</g></svg>`;
 }
 
 function buildGradDef(id, grad, c1, c2) {
