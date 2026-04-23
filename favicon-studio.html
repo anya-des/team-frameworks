@@ -5142,6 +5142,7 @@ async function downloadZip() {
       URL.revokeObjectURL(blobUrl);
       canvas.toBlob(resolve,'image/png');
     };
+    img.onerror=()=>resolve(new Blob([''],{type:'image/png'}));
     img.src=blobUrl;
   });
 
