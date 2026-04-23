@@ -4889,7 +4889,7 @@ function buildContent(entry, suffix, ic, forDom) {
   }
 
   const fs=entry.abbr.length===1?15:entry.abbr.length===2?11:8.5;
-  return `<text x="16" y="50%" dominant-baseline="middle" text-anchor="middle" font-weight="700" font-family="system-ui,sans-serif" font-size="${fs}" class="${lbClass}">${entry.abbr}</text>`;
+  return `<text x="16" y="16" dominant-baseline="middle" text-anchor="middle" font-weight="700" font-family="system-ui,sans-serif" font-size="${fs}" class="${lbClass}">${entry.abbr}</text>`;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -5129,9 +5129,26 @@ async function downloadZip() {
   const zip=new JSZip();
   const date=new Date().toISOString().slice(0,10);
   const count=Object.keys(generated).length;
+
+  const svgToPng=(svgStr)=>new Promise((resolve)=>{
+    const canvas=document.createElement('canvas');
+    canvas.width=64; canvas.height=64;
+    const ctx=canvas.getContext('2d');
+    const img=new Image();
+    const blobUrl=URL.createObjectURL(new Blob([svgStr],{type:'image/svg+xml'}));
+    img.onload=()=>{
+      ctx.drawImage(img,0,0,64,64);
+      URL.revokeObjectURL(blobUrl);
+      canvas.toBlob(resolve,'image/png');
+    };
+    img.src=blobUrl;
+  });
+
   for(const [domain,entry] of Object.entries(generated)){
-    zip.file(`${domain}.svg`,entry.svg||'');
+    const png=await svgToPng(entry.svg||'');
+    zip.file(`${domain}.png`,png);
   }
+
   const blob=await zip.generateAsync({type:'blob'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
