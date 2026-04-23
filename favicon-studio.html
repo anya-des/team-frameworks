@@ -5134,6 +5134,7 @@ async function downloadZip() {
     const canvas=document.createElement('canvas');
     canvas.width=64; canvas.height=64;
     const ctx=canvas.getContext('2d');
+    ctx.clearRect(0,0,64,64);
     const img=new Image();
     const blobUrl=URL.createObjectURL(new Blob([svgStr],{type:'image/svg+xml'}));
     img.onload=()=>{
